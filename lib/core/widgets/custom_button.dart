@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../constants/colors.dart';
+import '../constants/typography.dart';
 import '../services/vibration_service.dart';
 
 class CustomButton extends StatefulWidget {
@@ -21,9 +22,9 @@ class CustomButton extends StatefulWidget {
     this.backgroundColor,
     this.textColor,
     this.width,
-    this.height = 56,
+    this.height = 60,
     this.borderRadius = 20,
-    this.fontSize = 18,
+    this.fontSize = AppTypeScale.interactive,
     this.emoji,
     this.shadow = true,
   });
@@ -45,9 +46,10 @@ class _CustomButtonState extends State<CustomButton>
       vsync: this,
       duration: const Duration(milliseconds: 100),
     );
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.93).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    _scaleAnimation = Tween<double>(
+      begin: 1.0,
+      end: 0.93,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override
@@ -92,7 +94,10 @@ class _CustomButtonState extends State<CustomButton>
               mainAxisSize: MainAxisSize.min,
               children: [
                 if (widget.emoji != null) ...[
-                  Text(widget.emoji!, style: TextStyle(fontSize: widget.fontSize)),
+                  Text(
+                    widget.emoji!,
+                    style: TextStyle(fontSize: widget.fontSize),
+                  ),
                   const SizedBox(width: 8),
                 ],
                 Text(

@@ -4,6 +4,8 @@ import '../models/animal_model.dart';
 import '../widgets/animal_card.dart';
 import 'animal_detail_screen.dart';
 import '../../../core/constants/colors.dart';
+import '../../../core/constants/dimensions.dart';
+import '../../../core/constants/typography.dart';
 import '../../../core/widgets/page_scaffold.dart';
 
 class AnimalsScreen extends StatefulWidget {
@@ -35,9 +37,7 @@ class _AnimalsScreenState extends State<AnimalsScreen> {
           // Категории
           _buildCategoryFilter(),
           // Грид
-          Expanded(
-            child: _buildAnimalsGrid(),
-          ),
+          Expanded(child: _buildAnimalsGrid()),
         ],
       ),
     );
@@ -45,7 +45,7 @@ class _AnimalsScreenState extends State<AnimalsScreen> {
 
   Widget _buildCategoryFilter() {
     return Container(
-      height: 48,
+      height: 64,
       margin: const EdgeInsets.only(top: 16),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
@@ -55,12 +55,15 @@ class _AnimalsScreenState extends State<AnimalsScreen> {
           final cat = _categories[index];
           final isSelected = cat == _selectedCategory;
           return Padding(
-            padding: const EdgeInsets.only(right: 10),
+            padding: const EdgeInsets.only(right: 14),
             child: GestureDetector(
               onTap: () => setState(() => _selectedCategory = cat),
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 14,
+                ),
                 decoration: BoxDecoration(
                   color: isSelected ? AppColors.animalsColor : Colors.white,
                   borderRadius: BorderRadius.circular(14),
@@ -72,13 +75,27 @@ class _AnimalsScreenState extends State<AnimalsScreen> {
                     ),
                   ],
                 ),
-                child: Text(
-                  _categoryLabel(cat),
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    color: isSelected ? Colors.white : AppColors.animalsColor,
-                  ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      _categoryEmoji(cat),
+                      style: const TextStyle(fontSize: 21),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      _categoryName(cat),
+                      maxLines: 1,
+                      style: TextStyle(
+                        fontSize: AppTypeScale.interactive,
+                        fontWeight: FontWeight.w700,
+                        color: isSelected
+                            ? Colors.white
+                            : AppColors.animalsColor,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -88,43 +105,71 @@ class _AnimalsScreenState extends State<AnimalsScreen> {
     );
   }
 
-  String _categoryLabel(String cat) {
+  String _categoryEmoji(String cat) {
     switch (cat) {
-      case 'сите': return '🌍 Сите';
-      case 'домашно': return '🏠 Домашни';
-      case 'дивјо': return '🌿 Дивји';
-      case 'птица': return '🐦 Птици';
-      case 'море': return '🌊 Море';
-      default: return cat;
+      case 'сите':
+        return '🌍';
+      case 'домашно':
+        return '🏠';
+      case 'дивјо':
+        return '🌿';
+      case 'птица':
+        return '🐦';
+      case 'море':
+        return '🌊';
+      default:
+        return '🐾';
+    }
+  }
+
+  String _categoryName(String cat) {
+    switch (cat) {
+      case 'сите':
+        return 'Сите';
+      case 'домашно':
+        return 'Домашни';
+      case 'дивјо':
+        return 'Дивји';
+      case 'птица':
+        return 'Птици';
+      case 'море':
+        return 'Море';
+      default:
+        return cat;
     }
   }
 
   Widget _buildAnimalsGrid() {
     final animals = _filteredAnimals;
-    return GridView.builder(
-      padding: const EdgeInsets.all(16),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        crossAxisSpacing: 12,
-        mainAxisSpacing: 12,
-        childAspectRatio: 0.85,
+    return LayoutBuilder(
+      builder: (context, constraints) => GridView.builder(
+        padding: const EdgeInsets.all(AppDimensions.learningGridPadding),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: AppDimensions.responsiveColumnCount(
+            availableWidth: constraints.maxWidth,
+            minimumCardWidth: AppDimensions.learningCardMinWidth,
+          ),
+          crossAxisSpacing: AppDimensions.learningGridSpacing,
+          mainAxisSpacing: AppDimensions.learningGridSpacing,
+          childAspectRatio: 0.82,
+        ),
+        itemCount: animals.length,
+        itemBuilder: (context, index) {
+          final animal = animals[index];
+          return AnimalCard(
+            animal: animal,
+            index: index,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => AnimalDetailScreen(animal: animal),
+                ),
+              );
+            },
+          );
+        },
       ),
-      itemCount: animals.length,
-      itemBuilder: (context, index) {
-        final animal = animals[index];
-        return AnimalCard(
-          animal: animal,
-          index: index,
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => AnimalDetailScreen(animal: animal),
-              ),
-            );
-          },
-        );
-      },
     );
   }
 }

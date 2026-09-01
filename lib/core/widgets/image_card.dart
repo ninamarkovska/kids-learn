@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../constants/typography.dart';
 
 class ImageCard extends StatelessWidget {
   final String? imagePath;
@@ -47,10 +48,8 @@ class ImageCard extends StatelessWidget {
                 width: 80,
                 height: 80,
                 fit: BoxFit.contain,
-                errorBuilder: (_, __, ___) => Text(
-                  fallbackEmoji,
-                  style: const TextStyle(fontSize: 60),
-                ),
+                errorBuilder: (_, __, ___) =>
+                    Text(fallbackEmoji, style: const TextStyle(fontSize: 60)),
               )
             else
               Text(fallbackEmoji, style: const TextStyle(fontSize: 60)),
@@ -58,7 +57,7 @@ class ImageCard extends StatelessWidget {
             Text(
               label,
               style: TextStyle(
-                fontSize: 16,
+                fontSize: AppTypeScale.itemTitle,
                 fontWeight: FontWeight.w700,
                 color: color,
               ),

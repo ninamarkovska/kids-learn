@@ -6,6 +6,8 @@ import '../../../core/constants/colors.dart';
 import '../../../core/widgets/page_scaffold.dart';
 import '../../../core/services/tts_service.dart';
 import '../../../core/services/vibration_service.dart';
+import '../../../core/constants/dimensions.dart';
+import '../../../core/constants/typography.dart';
 
 class ColorsShapesScreen extends StatefulWidget {
   const ColorsShapesScreen({super.key});
@@ -53,12 +55,16 @@ class _ColorsShapesScreenState extends State<ColorsShapesScreen> {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       padding: const EdgeInsets.all(4),
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 8)]),
-      child: Row(children: [
-        _tabBtn('colors', '🎨 Бои'),
-        _tabBtn('shapes', '🔷 Форми'),
-      ]),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 8),
+        ],
+      ),
+      child: Row(
+        children: [_tabBtn('colors', '🎨 Бои'), _tabBtn('shapes', '🔷 Форми')],
+      ),
     );
   }
 
@@ -66,16 +72,26 @@ class _ColorsShapesScreenState extends State<ColorsShapesScreen> {
     final active = _tab == key;
     return Expanded(
       child: GestureDetector(
-        onTap: () => setState(() { _tab = key; _selected = null; }),
+        onTap: () => setState(() {
+          _tab = key;
+          _selected = null;
+        }),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           padding: const EdgeInsets.symmetric(vertical: 12),
           decoration: BoxDecoration(
             color: active ? AppColors.colorsShapesColor : Colors.transparent,
-            borderRadius: BorderRadius.circular(12)),
-          child: Text(label, textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700,
-              color: active ? Colors.white : AppColors.textSecondary)),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Text(
+            label,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: AppTypeScale.interactive,
+              fontWeight: FontWeight.w700,
+              color: active ? Colors.white : AppColors.textSecondary,
+            ),
+          ),
         ),
       ),
     );
@@ -90,30 +106,69 @@ class _ColorsShapesScreenState extends State<ColorsShapesScreen> {
       decoration: BoxDecoration(
         color: Color.lerp(item.displayColor, Colors.white, 0.85),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: item.displayColor.withOpacity(0.3), width: 2)),
-      child: Row(children: [
-        if (item.type == ItemType.color)
-          Container(width: 36, height: 36,
-            decoration: BoxDecoration(color: item.displayColor, shape: BoxShape.circle))
-        else
-          Text(item.emoji, style: const TextStyle(fontSize: 32)),
-        const SizedBox(width: 12),
-        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(item.name, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: item.displayColor)),
-          Text(item.description, style: const TextStyle(fontSize: 13, color: AppColors.textSecondary)),
-        ])),
-        Icon(Icons.volume_up_rounded, color: item.displayColor),
-      ]),
+        border: Border.all(color: item.displayColor.withOpacity(0.3), width: 2),
+      ),
+      child: Row(
+        children: [
+          if (item.type == ItemType.color)
+            Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: item.displayColor,
+                shape: BoxShape.circle,
+              ),
+            )
+          else
+            Text(item.emoji, style: const TextStyle(fontSize: 32)),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  item.name,
+                  style: TextStyle(
+                    fontSize: AppTypeScale.itemTitle,
+                    fontWeight: FontWeight.w800,
+                    color: item.displayColor,
+                  ),
+                ),
+                Text(
+                  item.description,
+                  style: const TextStyle(
+                    fontSize: AppTypeScale.secondary,
+                    color: AppColors.textSecondary,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+          Icon(Icons.volume_up_rounded, color: item.displayColor),
+        ],
+      ),
     );
   }
 
   Widget _buildGrid() {
-    return GridView.builder(
-      padding: const EdgeInsets.all(16),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3, crossAxisSpacing: 12, mainAxisSpacing: 12, childAspectRatio: 0.9),
-      itemCount: _items.length,
-      itemBuilder: (_, i) => ColorShapeCard(item: _items[i], onTap: () => _onTap(_items[i])),
+    return LayoutBuilder(
+      builder: (context, constraints) => GridView.builder(
+        padding: const EdgeInsets.all(AppDimensions.learningGridPadding),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: AppDimensions.responsiveColumnCount(
+            availableWidth: constraints.maxWidth,
+            minimumCardWidth: AppDimensions.learningCardMinWidth,
+          ),
+          crossAxisSpacing: AppDimensions.learningGridSpacing,
+          mainAxisSpacing: AppDimensions.learningGridSpacing,
+          childAspectRatio: 0.88,
+        ),
+        itemCount: _items.length,
+        itemBuilder: (_, i) =>
+            ColorShapeCard(item: _items[i], onTap: () => _onTap(_items[i])),
+      ),
     );
   }
 }

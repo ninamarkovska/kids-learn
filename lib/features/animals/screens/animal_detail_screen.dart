@@ -4,7 +4,8 @@ import '../../../core/constants/colors.dart';
 import '../../../core/services/tts_service.dart';
 import '../../../core/services/vibration_service.dart';
 import '../../../core/widgets/custom_button.dart';
-import '../../../core/services/audio_service.dart'; 
+import '../../../core/services/audio_service.dart';
+import '../../../core/constants/typography.dart';
 
 class AnimalDetailScreen extends StatefulWidget {
   final AnimalModel animal;
@@ -35,8 +36,6 @@ class _AnimalDetailScreenState extends State<AnimalDetailScreen>
     _bounceAnim = Tween<double>(begin: 1.0, end: 1.15).animate(
       CurvedAnimation(parent: _bounceController, curve: Curves.elasticInOut),
     );
-
-  
   }
 
   @override
@@ -47,24 +46,24 @@ class _AnimalDetailScreenState extends State<AnimalDetailScreen>
   }
 
   void _speakAnimal() async {
-  setState(() => _isSpeaking = true);
-  _bounceController.repeat(reverse: true);
+    setState(() => _isSpeaking = true);
+    _bounceController.repeat(reverse: true);
 
-  try {
-    await _audio.playAsset(widget.animal.audioPath);
-    await Future.delayed(const Duration(milliseconds: 1500));
-  } catch (e) {
-    await _tts.speakAnimal(widget.animal.name);
-    await Future.delayed(const Duration(milliseconds: 800));
-    await _tts.speak(widget.animal.sound);
-  }
+    try {
+      await _audio.playAsset(widget.animal.audioPath);
+      await Future.delayed(const Duration(milliseconds: 1500));
+    } catch (e) {
+      await _tts.speakAnimal(widget.animal.name);
+      await Future.delayed(const Duration(milliseconds: 800));
+      await _tts.speak(widget.animal.sound);
+    }
 
-  if (mounted) {
-    setState(() => _isSpeaking = false);
-    _bounceController.stop();
-    _bounceController.reset();
+    if (mounted) {
+      setState(() => _isSpeaking = false);
+      _bounceController.stop();
+      _bounceController.reset();
+    }
   }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -121,7 +120,7 @@ class _AnimalDetailScreenState extends State<AnimalDetailScreen>
               widget.animal.name,
               textAlign: TextAlign.center,
               style: const TextStyle(
-                fontSize: 26,
+                fontSize: AppTypeScale.screenTitle,
                 fontWeight: FontWeight.w800,
                 color: Colors.white,
               ),
@@ -209,7 +208,7 @@ class _AnimalDetailScreenState extends State<AnimalDetailScreen>
             Text(
               label,
               style: const TextStyle(
-                fontSize: 12,
+                fontSize: AppTypeScale.secondary,
                 color: AppColors.textSecondary,
                 fontWeight: FontWeight.w500,
               ),
@@ -217,7 +216,7 @@ class _AnimalDetailScreenState extends State<AnimalDetailScreen>
             Text(
               value,
               style: const TextStyle(
-                fontSize: 16,
+                fontSize: AppTypeScale.itemTitle,
                 fontWeight: FontWeight.w700,
                 color: AppColors.textPrimary,
               ),
@@ -247,7 +246,7 @@ class _AnimalDetailScreenState extends State<AnimalDetailScreen>
                 const Text(
                   'Дали знаеш?',
                   style: TextStyle(
-                    fontSize: 13,
+                    fontSize: AppTypeScale.secondary,
                     color: Colors.white70,
                     fontWeight: FontWeight.w600,
                   ),
@@ -256,7 +255,7 @@ class _AnimalDetailScreenState extends State<AnimalDetailScreen>
                 Text(
                   widget.animal.funFact,
                   style: const TextStyle(
-                    fontSize: 15,
+                    fontSize: AppTypeScale.interactive,
                     color: Colors.white,
                     fontWeight: FontWeight.w700,
                   ),
@@ -279,18 +278,23 @@ class _AnimalDetailScreenState extends State<AnimalDetailScreen>
         backgroundColor: AppColors.animalsColor,
         width: double.infinity,
         height: 60,
-        fontSize: 18,
+        fontSize: AppTypeScale.itemTitle,
       ),
     );
   }
 
   String _categoryLabel(String cat) {
     switch (cat) {
-      case 'домашно': return '🏠 Домашно';
-      case 'дивјо': return '🌿 Дивјо';
-      case 'птица': return '🐦 Птица';
-      case 'море': return '🌊 Морско';
-      default: return cat;
+      case 'домашно':
+        return '🏠 Домашно';
+      case 'дивјо':
+        return '🌿 Дивјо';
+      case 'птица':
+        return '🐦 Птица';
+      case 'море':
+        return '🌊 Морско';
+      default:
+        return cat;
     }
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/animal_model.dart';
 import '../../../core/constants/colors.dart';
+import '../../../core/constants/dimensions.dart';
 import '../../../core/services/vibration_service.dart';
 
 class AnimalCard extends StatefulWidget {
@@ -45,9 +46,10 @@ class _AnimalCardState extends State<AnimalCard>
       vsync: this,
       duration: const Duration(milliseconds: 120),
     );
-    _scaleAnim = Tween<double>(begin: 1.0, end: 0.92).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    _scaleAnim = Tween<double>(
+      begin: 1.0,
+      end: 0.92,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override
@@ -72,6 +74,7 @@ class _AnimalCardState extends State<AnimalCard>
       child: ScaleTransition(
         scale: _scaleAnim,
         child: Container(
+          padding: const EdgeInsets.all(AppDimensions.cardPadding),
           decoration: BoxDecoration(
             color: lightColor,
             borderRadius: BorderRadius.circular(20),
@@ -122,12 +125,12 @@ class _AnimalCardState extends State<AnimalCard>
                 child: Text(
                   widget.animal.name,
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: AppDimensions.cardTitleFont,
                     fontWeight: FontWeight.w800,
                     color: _cardColor,
                   ),
                   textAlign: TextAlign.center,
-                  maxLines: 1,
+                  maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
@@ -136,7 +139,7 @@ class _AnimalCardState extends State<AnimalCard>
               Text(
                 widget.animal.sound,
                 style: TextStyle(
-                  fontSize: 12,
+                  fontSize: AppDimensions.cardSubtitleFont,
                   fontWeight: FontWeight.w500,
                   color: _cardColor.withOpacity(0.7),
                 ),
