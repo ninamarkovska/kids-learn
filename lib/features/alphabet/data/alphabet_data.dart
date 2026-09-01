@@ -1,0 +1,37 @@
+import '../models/letter_model.dart';
+
+class AlphabetData {
+  static const List<LetterModel> letters = [
+    LetterModel(letter: 'А', letterLower: 'а', emoji: '🍎', word: 'Авион',    audioPath: 'audio/letters/a.mp3', imagePath: 'assets/images/alphabet/a.png', funFact: 'А е првата буква во азбуката!'),
+    LetterModel(letter: 'Б', letterLower: 'б', emoji: '🍌', word: 'Банана',   audioPath: 'audio/letters/b.mp3', imagePath: 'assets/images/alphabet/b.png', funFact: 'Б е за Банана - жолто и вкусно!'),
+    LetterModel(letter: 'В', letterLower: 'в', emoji: '💧', word: 'Вода',     audioPath: 'audio/letters/v.mp3', imagePath: 'assets/images/alphabet/v.png', funFact: 'В е за Вода - без неа нема живот!'),
+    LetterModel(letter: 'Г', letterLower: 'г', emoji: '🍇', word: 'Грозје',   audioPath: 'audio/letters/g.mp3', imagePath: 'assets/images/alphabet/g.png', funFact: 'Г е за Грозје - кружни плодови!'),
+    LetterModel(letter: 'Д', letterLower: 'д', emoji: '🌳', word: 'Дрво',     audioPath: 'audio/letters/d.mp3', imagePath: 'assets/images/alphabet/d.png', funFact: 'Д е за Дрво - дает ни кислород!'),
+    LetterModel(letter: 'Ѓ', letterLower: 'ѓ', emoji: '👟', word: 'Ѓон',     audioPath: 'audio/letters/gj.mp3',imagePath: 'assets/images/alphabet/gj.png',funFact: 'Ѓ е специфична македонска буква!'),
+    LetterModel(letter: 'Е', letterLower: 'е', emoji: '🦔', word: 'Еж',       audioPath: 'audio/letters/e.mp3', imagePath: 'assets/images/alphabet/e.png', funFact: 'Е е за Еж - бодлив но мил!'),
+    LetterModel(letter: 'Ж', letterLower: 'ж', emoji: '🐸', word: 'Жаба',     audioPath: 'audio/letters/zh.mp3',imagePath: 'assets/images/alphabet/zh.png',funFact: 'Ж е за Жаба - скока многу високо!'),
+    LetterModel(letter: 'З', letterLower: 'з', emoji: '🐰', word: 'Зајак',    audioPath: 'audio/letters/z.mp3', imagePath: 'assets/images/alphabet/z.png', funFact: 'З е за Зајак - бргу трча!'),
+    LetterModel(letter: 'Ѕ', letterLower: 'ѕ', emoji: '🌟', word: 'Ѕвезда',  audioPath: 'audio/letters/dz.mp3',imagePath: 'assets/images/alphabet/dz.png',funFact: 'Ѕ е уникатна буква само во македонски!'),
+    LetterModel(letter: 'И', letterLower: 'и', emoji: '🎮', word: 'Игра',     audioPath: 'audio/letters/i.mp3', imagePath: 'assets/images/alphabet/i.png', funFact: 'И е за Игра - сите деца сакаат да играат!'),
+    LetterModel(letter: 'Ј', letterLower: 'ј', emoji: '🍓', word: 'Јагода',   audioPath: 'audio/letters/j.mp3', imagePath: 'assets/images/alphabet/j.png', funFact: 'Ј е за Јагода - кисела и слатка!'),
+    LetterModel(letter: 'К', letterLower: 'к', emoji: '🐈', word: 'Коза',     audioPath: 'audio/letters/k.mp3', imagePath: 'assets/images/alphabet/k.png', funFact: 'К е за Коза - дава вкусно млеко!'),
+    LetterModel(letter: 'Л', letterLower: 'л', emoji: '🦁', word: 'Лав',      audioPath: 'audio/letters/l.mp3', imagePath: 'assets/images/alphabet/l.png', funFact: 'Л е за Лав - кралот на животните!'),
+    LetterModel(letter: 'Љ', letterLower: 'љ', emoji: '💜', word: 'Љубов',    audioPath: 'audio/letters/lj.mp3',imagePath: 'assets/images/alphabet/lj.png',funFact: 'Љ е за Љубов - најубавото нешто!'),
+    LetterModel(letter: 'М', letterLower: 'м', emoji: '🐮', word: 'Мачка',    audioPath: 'audio/letters/m.mp3', imagePath: 'assets/images/alphabet/m.png', funFact: 'М е за Мачка - мила и мека!'),
+    LetterModel(letter: 'Н', letterLower: 'н', emoji: '🌙', word: 'Ноќ',      audioPath: 'audio/letters/n.mp3', imagePath: 'assets/images/alphabet/n.png', funFact: 'Н е за Ноќ - кога светат ѕвездите!'),
+    LetterModel(letter: 'Њ', letterLower: 'њ', emoji: '👃', word: 'Њушка',    audioPath: 'audio/letters/nj.mp3',imagePath: 'assets/images/alphabet/nj.png',funFact: 'Њ е посебна буква во македонски!'),
+    LetterModel(letter: 'О', letterLower: 'о', emoji: '🦅', word: 'Орел',     audioPath: 'audio/letters/o.mp3', imagePath: 'assets/images/alphabet/o.png', funFact: 'О е за Орел - висока птица!'),
+    LetterModel(letter: 'П', letterLower: 'п', emoji: '🐧', word: 'Пингвин',  audioPath: 'audio/letters/p.mp3', imagePath: 'assets/images/alphabet/p.png', funFact: 'П е за Пингвин - не лета но пливат!'),
+    LetterModel(letter: 'Р', letterLower: 'р', emoji: '🐟', word: 'Риба',     audioPath: 'audio/letters/r.mp3', imagePath: 'assets/images/alphabet/r.png', funFact: 'Р е за Риба - живее во вода!'),
+    LetterModel(letter: 'С', letterLower: 'с', emoji: '☀️', word: 'Сонце',    audioPath: 'audio/letters/s.mp3', imagePath: 'assets/images/alphabet/s.png', funFact: 'С е за Сонце - ни дава светло и топлина!'),
+    LetterModel(letter: 'Т', letterLower: 'т', emoji: '🐯', word: 'Тигар',    audioPath: 'audio/letters/t.mp3', imagePath: 'assets/images/alphabet/t.png', funFact: 'Т е за Тигар - со убави пруги!'),
+    LetterModel(letter: 'Ќ', letterLower: 'ќ', emoji: '🌉', word: 'Ќуприја', audioPath: 'audio/letters/kj.mp3',imagePath: 'assets/images/alphabet/kj.png',funFact: 'Ќ е карактеристична македонска буква!'),
+    LetterModel(letter: 'У', letterLower: 'у', emoji: '👂', word: 'Уво',      audioPath: 'audio/letters/u.mp3', imagePath: 'assets/images/alphabet/u.png', funFact: 'У е за Уво - со него слушаме!'),
+    LetterModel(letter: 'Ф', letterLower: 'ф', emoji: '🔦', word: 'Фенер',    audioPath: 'audio/letters/f.mp3', imagePath: 'assets/images/alphabet/f.png', funFact: 'Ф е за Фенер - осветлува темнина!'),
+    LetterModel(letter: 'Х', letterLower: 'х', emoji: '📝', word: 'Хартија',     audioPath: 'audio/letters/h.mp3', imagePath: 'assets/images/alphabet/h.png', funFact: 'Х е за Хартија - основна храна!'),
+    LetterModel(letter: 'Ц', letterLower: 'ц', emoji: '🌸', word: 'Цвет',     audioPath: 'audio/letters/c.mp3', imagePath: 'assets/images/alphabet/c.png', funFact: 'Ц е за Цвет - убав и мирисен!'),
+    LetterModel(letter: 'Ч', letterLower: 'ч', emoji: '☕', word: 'Чај',       audioPath: 'audio/letters/ch.mp3',imagePath: 'assets/images/alphabet/ch.png',funFact: 'Ч е за Чај - топол пијалок!'),
+    LetterModel(letter: 'Џ', letterLower: 'џ', emoji: '🎸', word: 'Џез',      audioPath: 'audio/letters/dzh.mp3',imagePath:'assets/images/alphabet/dzh.png',funFact:'Џ е за Џез - весела музика!'),
+    LetterModel(letter: 'Ш', letterLower: 'ш', emoji: '🍫', word: 'Шеќер',    audioPath: 'audio/letters/sh.mp3',imagePath: 'assets/images/alphabet/sh.png',funFact: 'Ш е за Шеќер - слатко и убаво!'),
+  ];
+}
