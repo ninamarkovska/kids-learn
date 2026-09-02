@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/animal_model.dart';
-import '../../../core/constants/colors.dart';
+import '../../../core/accessibility/accessibility_settings.dart';
 import '../../../core/constants/dimensions.dart';
 import '../../../core/services/vibration_service.dart';
 
@@ -25,19 +25,6 @@ class _AnimalCardState extends State<AnimalCard>
   late AnimationController _controller;
   late Animation<double> _scaleAnim;
   final _vibration = VibrationService();
-
-  static const _colors = [
-    AppColors.animalsColor,
-    Color(0xFF00CEC9),
-    Color(0xFFE17055),
-    Color(0xFFFF9F43),
-    Color(0xFF6C5CE7),
-    Color(0xFF00B894),
-    Color(0xFFFF7675),
-    Color(0xFF74B9FF),
-  ];
-
-  Color get _cardColor => _colors[widget.index % _colors.length];
 
   @override
   void initState() {
@@ -67,7 +54,9 @@ class _AnimalCardState extends State<AnimalCard>
 
   @override
   Widget build(BuildContext context) {
-    final lightColor = Color.lerp(_cardColor, Colors.white, 0.85)!;
+    final palette = AccessibilityScope.of(context).palette;
+    final cardColor = palette.itemAccent(widget.index);
+    final lightColor = palette.tintedSurface(cardColor);
 
     return GestureDetector(
       onTap: _handleTap,
@@ -78,10 +67,13 @@ class _AnimalCardState extends State<AnimalCard>
           decoration: BoxDecoration(
             color: lightColor,
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: _cardColor.withOpacity(0.2), width: 2),
+            border: Border.all(
+              color: palette.border,
+              width: palette.borderWidth,
+            ),
             boxShadow: [
               BoxShadow(
-                color: _cardColor.withOpacity(0.15),
+                color: cardColor.withValues(alpha: 0.15),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
@@ -95,11 +87,11 @@ class _AnimalCardState extends State<AnimalCard>
                 width: 70,
                 height: 70,
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: palette.controlBackground,
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: _cardColor.withOpacity(0.2),
+                      color: cardColor.withValues(alpha: 0.2),
                       blurRadius: 8,
                       offset: const Offset(0, 3),
                     ),
@@ -118,7 +110,7 @@ class _AnimalCardState extends State<AnimalCard>
                   ),
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 6),
               // Име
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -127,7 +119,7 @@ class _AnimalCardState extends State<AnimalCard>
                   style: TextStyle(
                     fontSize: AppDimensions.cardTitleFont,
                     fontWeight: FontWeight.w800,
-                    color: _cardColor,
+                    color: palette.textPrimary,
                   ),
                   textAlign: TextAlign.center,
                   maxLines: 2,
@@ -141,7 +133,7 @@ class _AnimalCardState extends State<AnimalCard>
                 style: TextStyle(
                   fontSize: AppDimensions.cardSubtitleFont,
                   fontWeight: FontWeight.w500,
-                  color: _cardColor.withOpacity(0.7),
+                  color: palette.textSecondary,
                 ),
               ),
             ],

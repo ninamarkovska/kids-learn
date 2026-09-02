@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../data/alphabet_data.dart';
 import '../models/letter_model.dart';
 import '../widgets/letter_card.dart';
-import '../../../core/constants/colors.dart';
+import '../../../core/accessibility/accessibility_settings.dart';
 import '../../../core/widgets/page_scaffold.dart';
 import '../../../core/services/tts_service.dart';
 import '../../../core/services/vibration_service.dart';
@@ -34,9 +34,10 @@ class _AlphabetScreenState extends State<AlphabetScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final palette = AccessibilityScope.of(context).palette;
     return PageScaffold(
       title: '🔤 Азбука',
-      gradientColors: AppColors.alphabetGradient.colors,
+      gradientColors: palette.alphabetGradient.colors,
       child: Column(
         children: [
           if (_selected != null) _buildBanner(),
@@ -75,12 +76,14 @@ class _AlphabetScreenState extends State<AlphabetScreen> {
 
   Widget _buildBanner() {
     final l = _selected!;
+    final palette = AccessibilityScope.of(context).palette;
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        gradient: AppColors.alphabetGradient,
+        gradient: palette.alphabetGradient,
+        border: Border.all(color: palette.border, width: palette.borderWidth),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
@@ -89,16 +92,16 @@ class _AlphabetScreenState extends State<AlphabetScreen> {
             width: 64,
             height: 64,
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.25),
+              color: palette.onCard.withValues(alpha: 0.25),
               borderRadius: BorderRadius.circular(16),
             ),
             child: Center(
               child: Text(
                 l.letter,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 36,
                   fontWeight: FontWeight.w900,
-                  color: Colors.white,
+                  color: palette.onCard,
                 ),
               ),
             ),
@@ -110,18 +113,18 @@ class _AlphabetScreenState extends State<AlphabetScreen> {
               children: [
                 Text(
                   'Буква ${l.letter} - за ${l.word}',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: AppTypeScale.itemTitle,
                     fontWeight: FontWeight.w800,
-                    color: Colors.white,
+                    color: palette.onCard,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   l.funFact,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: AppTypeScale.secondary,
-                    color: Colors.white70,
+                    color: palette.onCardSecondary,
                   ),
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,

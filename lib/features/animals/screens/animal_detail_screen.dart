@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/animal_model.dart';
-import '../../../core/constants/colors.dart';
+import '../../../core/accessibility/accessibility_settings.dart';
 import '../../../core/services/tts_service.dart';
 import '../../../core/services/vibration_service.dart';
 import '../../../core/widgets/custom_button.dart';
@@ -67,8 +67,9 @@ class _AnimalDetailScreenState extends State<AnimalDetailScreen>
 
   @override
   Widget build(BuildContext context) {
+    final palette = AccessibilityScope.of(context).palette;
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: palette.backgroundGradient.colors.first,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -88,10 +89,11 @@ class _AnimalDetailScreenState extends State<AnimalDetailScreen>
   }
 
   Widget _buildHeader(BuildContext context) {
+    final palette = AccessibilityScope.of(context).palette;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        gradient: AppColors.animalsGradient,
+        gradient: palette.animalsGradient,
         borderRadius: const BorderRadius.only(
           bottomLeft: Radius.circular(24),
           bottomRight: Radius.circular(24),
@@ -105,12 +107,12 @@ class _AnimalDetailScreenState extends State<AnimalDetailScreen>
               width: 44,
               height: 44,
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.25),
+                color: palette.onCard.withValues(alpha: 0.25),
                 borderRadius: BorderRadius.circular(14),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.arrow_back_ios_new_rounded,
-                color: Colors.white,
+                color: palette.onCard,
                 size: 20,
               ),
             ),
@@ -119,10 +121,10 @@ class _AnimalDetailScreenState extends State<AnimalDetailScreen>
             child: Text(
               widget.animal.name,
               textAlign: TextAlign.center,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: AppTypeScale.screenTitle,
                 fontWeight: FontWeight.w800,
-                color: Colors.white,
+                color: palette.onCard,
               ),
             ),
           ),
@@ -133,16 +135,18 @@ class _AnimalDetailScreenState extends State<AnimalDetailScreen>
   }
 
   Widget _buildAnimalImage() {
+    final palette = AccessibilityScope.of(context).palette;
     return Container(
       margin: const EdgeInsets.all(24),
       width: double.infinity,
       height: 240,
       decoration: BoxDecoration(
-        color: AppColors.animalsColorLight,
+        color: palette.tintedSurface(palette.animalsGradient.colors.first),
         borderRadius: BorderRadius.circular(28),
+        border: Border.all(color: palette.border, width: palette.borderWidth),
         boxShadow: [
           BoxShadow(
-            color: AppColors.animalsColor.withOpacity(0.15),
+            color: palette.primary.withValues(alpha: 0.15),
             blurRadius: 20,
             offset: const Offset(0, 8),
           ),
@@ -167,15 +171,17 @@ class _AnimalDetailScreenState extends State<AnimalDetailScreen>
   }
 
   Widget _buildInfoCard() {
+    final palette = AccessibilityScope.of(context).palette;
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 24),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: palette.controlBackground,
         borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: palette.border, width: palette.borderWidth),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
+            color: palette.border.withValues(alpha: 0.12),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -198,6 +204,7 @@ class _AnimalDetailScreenState extends State<AnimalDetailScreen>
   }
 
   Widget _buildInfoRow(String icon, String label, String value) {
+    final palette = AccessibilityScope.of(context).palette;
     return Row(
       children: [
         Text(icon, style: const TextStyle(fontSize: 22)),
@@ -207,18 +214,18 @@ class _AnimalDetailScreenState extends State<AnimalDetailScreen>
           children: [
             Text(
               label,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: AppTypeScale.secondary,
-                color: AppColors.textSecondary,
+                color: palette.textSecondary,
                 fontWeight: FontWeight.w500,
               ),
             ),
             Text(
               value,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: AppTypeScale.itemTitle,
                 fontWeight: FontWeight.w700,
-                color: AppColors.textPrimary,
+                color: palette.textPrimary,
               ),
             ),
           ],
@@ -228,12 +235,14 @@ class _AnimalDetailScreenState extends State<AnimalDetailScreen>
   }
 
   Widget _buildFunFact() {
+    final palette = AccessibilityScope.of(context).palette;
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        gradient: AppColors.animalsGradient,
+        gradient: palette.animalsGradient,
         borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: palette.border, width: palette.borderWidth),
       ),
       child: Row(
         children: [
@@ -243,20 +252,20 @@ class _AnimalDetailScreenState extends State<AnimalDetailScreen>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'Дали знаеш?',
                   style: TextStyle(
                     fontSize: AppTypeScale.secondary,
-                    color: Colors.white70,
+                    color: palette.onCardSecondary,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   widget.animal.funFact,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: AppTypeScale.interactive,
-                    color: Colors.white,
+                    color: palette.onCard,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -269,13 +278,14 @@ class _AnimalDetailScreenState extends State<AnimalDetailScreen>
   }
 
   Widget _buildSpeakButton() {
+    final palette = AccessibilityScope.of(context).palette;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: CustomButton(
         text: _isSpeaking ? 'Слушај...' : 'Слушни ${widget.animal.name}',
         emoji: _isSpeaking ? '🔊' : '▶️',
         onTap: _isSpeaking ? () {} : _speakAnimal,
-        backgroundColor: AppColors.animalsColor,
+        backgroundColor: palette.animalsGradient.colors.first,
         width: double.infinity,
         height: 60,
         fontSize: AppTypeScale.itemTitle,

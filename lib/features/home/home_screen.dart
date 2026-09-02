@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../core/constants/colors.dart';
+import '../../core/accessibility/accessibility_settings.dart';
+import '../../core/accessibility/accessible_palette.dart';
 import '../../core/services/vibration_service.dart';
 import '../animals/screens/animals_screen.dart';
 import '../colors_shapes/screens/colors_shapes_screen.dart';
@@ -55,9 +56,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final palette = AccessibilityScope.of(context).palette;
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(gradient: AppColors.homeGradient),
+        decoration: BoxDecoration(gradient: palette.backgroundGradient),
         child: SafeArea(
           child: LayoutBuilder(
             builder: (context, constraints) {
@@ -68,13 +70,19 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               return Column(
                 children: [
                   SizedBox(height: compact ? 12 : 20),
-                  _buildTitle(compact: compact, titleFontSize: titleFontSize),
-                  SizedBox(height: compact ? 14 : 22),
-                  Expanded(child: _buildTopicList()),
+                  _buildTitle(
+                    compact: compact,
+                    titleFontSize: titleFontSize,
+                    palette: palette,
+                  ),
+                  SizedBox(height: compact ? 8 : 12),
+                  _buildAccessibilityButton(palette),
+                  SizedBox(height: compact ? 8 : 12),
+                  Expanded(child: _buildTopicList(palette)),
                   SizedBox(height: compact ? 12 : 16),
-                  _buildQuizButton(compact: compact),
+                  _buildQuizButton(compact: compact, palette: palette),
                   SizedBox(height: compact ? 10 : 12),
-                  _buildFooter(),
+                  _buildFooter(palette),
                   SizedBox(height: compact ? 12 : 16),
                 ],
               );
@@ -85,7 +93,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildTitle({required bool compact, required double titleFontSize}) {
+  Widget _buildTitle({
+    required bool compact,
+    required double titleFontSize,
+    required AccessiblePalette palette,
+  }) {
     return ScaleTransition(
       scale: _titleAnim,
       child: Column(
@@ -94,11 +106,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             width: compact ? 72 : 92,
             height: compact ? 72 : 92,
             decoration: BoxDecoration(
-              gradient: AppColors.quizGradient,
+              gradient: palette.quizGradient,
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.quizColor.withOpacity(0.35),
+                  color: palette.primary.withValues(alpha: 0.35),
                   blurRadius: 20,
                   spreadRadius: 2,
                 ),
@@ -114,17 +126,17 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             style: TextStyle(
               fontSize: titleFontSize,
               fontWeight: FontWeight.w900,
-              color: AppColors.textPrimary,
+              color: palette.textPrimary,
               letterSpacing: 0.5,
             ),
           ),
           const SizedBox(height: 4),
-          const Text(
+          Text(
             'Избери тема за учење',
             style: TextStyle(
               fontSize: 19,
               fontWeight: FontWeight.w600,
-              color: AppColors.textSecondary,
+              color: palette.textSecondary,
             ),
           ),
         ],
@@ -132,7 +144,83 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildTopicList() {
+  Widget _buildAccessibilityButton(AccessiblePalette palette) {
+    return Semantics(
+      button: true,
+      label: 'Пристапност. Отвори поставки за пристапност.',
+      excludeSemantics: true,
+      child: OutlinedButton.icon(
+        onPressed: _showAccessibilitySettings,
+        icon: const Icon(Icons.visibility_outlined),
+        label: const Text('Пристапност'),
+        style: OutlinedButton.styleFrom(
+          foregroundColor: palette.textPrimary,
+          backgroundColor: palette.controlBackground,
+          side: BorderSide(color: palette.border, width: palette.borderWidth),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 11),
+          textStyle: const TextStyle(fontSize: 17, fontWeight: FontWeight.w800),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showAccessibilitySettings() {
+    _vib.lightTap();
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      builder: (sheetContext) {
+        final settings = AccessibilityScope.of(sheetContext);
+        final palette = settings.palette;
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  'Пристапност',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.w900,
+                    color: palette.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  'Режим на бои',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w800,
+                    color: palette.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                for (final mode in ColorVisionMode.values)
+                  _ColorModeOption(
+                    mode: mode,
+                    selected: settings.colorVisionMode == mode,
+                    palette: palette,
+                    onTap: () {
+                      settings.setColorVisionMode(mode);
+                      _vib.lightTap();
+                    },
+                  ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildTopicList(AccessiblePalette palette) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: ListView(
@@ -143,7 +231,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             title: 'Животни',
             subtitle: 'Запознај ги!',
             emoji: '🐾',
-            gradient: AppColors.animalsGradient,
+            gradient: palette.cardGradients[0],
+            palette: palette,
             onTap: () => _navigate(const AnimalsScreen()),
           ),
           const SizedBox(height: 16),
@@ -151,7 +240,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             title: 'Бои и Форми',
             subtitle: 'Учи бои!',
             emoji: '🎨',
-            gradient: AppColors.colorsGradient,
+            gradient: palette.cardGradients[1],
+            palette: palette,
             onTap: () => _navigate(const ColorsShapesScreen()),
           ),
           const SizedBox(height: 16),
@@ -159,7 +249,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             title: 'Азбука',
             subtitle: 'Научи букви!',
             emoji: '🔤',
-            gradient: AppColors.alphabetGradient,
+            gradient: palette.cardGradients[2],
+            palette: palette,
             onTap: () => _navigate(const AlphabetScreen()),
           ),
           const SizedBox(height: 16),
@@ -167,11 +258,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             title: 'Растенија',
             subtitle: 'Запознај ги!',
             emoji: '🌿',
-            gradient: const LinearGradient(
-              colors: [Color(0xFF11998e), Color(0xFF38ef7d)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
+            gradient: palette.cardGradients[3],
+            palette: palette,
             onTap: () => _navigate(const PlantsScreen()),
           ),
         ],
@@ -179,7 +267,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildQuizButton({required bool compact}) {
+  Widget _buildQuizButton({
+    required bool compact,
+    required AccessiblePalette palette,
+  }) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
       width: double.infinity,
@@ -189,11 +280,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           width: double.infinity,
           height: compact ? 68 : 74,
           decoration: BoxDecoration(
-            gradient: AppColors.quizGradient,
+            gradient: palette.quizGradient,
             borderRadius: BorderRadius.circular(24),
+            border: Border.all(
+              color: palette.border,
+              width: palette.borderWidth,
+            ),
             boxShadow: [
               BoxShadow(
-                color: AppColors.quizColor.withOpacity(0.4),
+                color: palette.primary.withValues(alpha: 0.4),
                 blurRadius: 16,
                 offset: const Offset(0, 6),
               ),
@@ -211,12 +306,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               ),
               Positioned.fill(
                 right: 46,
-                child: const Center(
+                child: Center(
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text('🧠', style: TextStyle(fontSize: 30)),
-                      SizedBox(width: 12),
+                      const Text('🧠', style: TextStyle(fontSize: 30)),
+                      const SizedBox(width: 12),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -225,7 +320,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.w900,
-                              color: Colors.white,
+                              color: palette.onCard,
                             ),
                           ),
                           Text(
@@ -233,7 +328,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
-                              color: Colors.white70,
+                              color: palette.onCardSecondary,
                             ),
                           ),
                         ],
@@ -254,6 +349,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     required String subtitle,
     required String emoji,
     required LinearGradient gradient,
+    required AccessiblePalette palette,
     required VoidCallback onTap,
   }) {
     return GestureDetector(
@@ -268,9 +364,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           decoration: BoxDecoration(
             gradient: gradient,
             borderRadius: BorderRadius.circular(26),
+            border: Border.all(
+              color: palette.border,
+              width: palette.borderWidth,
+            ),
             boxShadow: [
               BoxShadow(
-                color: gradient.colors.first.withOpacity(0.4),
+                color: gradient.colors.first.withValues(alpha: 0.4),
                 blurRadius: 16,
                 offset: const Offset(0, 6),
               ),
@@ -297,7 +397,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       width: 68,
                       height: 68,
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
+                        color: Colors.white.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       alignment: Alignment.center,
@@ -313,11 +413,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             title,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 23,
                               height: 1.1,
                               fontWeight: FontWeight.w900,
-                              color: Colors.white,
+                              color: palette.onCard,
                             ),
                           ),
                           const SizedBox(height: 6),
@@ -325,10 +425,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             subtitle,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
-                              color: Colors.white70,
+                              color: palette.onCardSecondary,
                             ),
                           ),
                         ],
@@ -344,16 +444,89 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildFooter() {
-    return const Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20),
+  Widget _buildFooter(AccessiblePalette palette) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Text(
         '🌟 Учи, Играј, Расти! 🌟',
         textAlign: TextAlign.center,
         style: TextStyle(
           fontSize: 17,
           fontWeight: FontWeight.w600,
-          color: AppColors.textSecondary,
+          color: palette.textSecondary,
+        ),
+      ),
+    );
+  }
+}
+
+class _ColorModeOption extends StatelessWidget {
+  const _ColorModeOption({
+    required this.mode,
+    required this.selected,
+    required this.palette,
+    required this.onTap,
+  });
+
+  final ColorVisionMode mode;
+  final bool selected;
+  final AccessiblePalette palette;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final status = selected ? 'избрано' : 'не е избрано';
+    return Semantics(
+      button: true,
+      selected: selected,
+      label: '${mode.label}, $status',
+      excludeSemantics: true,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(16),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 180),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            decoration: BoxDecoration(
+              color: selected
+                  ? palette.selectedBackground
+                  : palette.controlBackground,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: selected ? palette.selected : palette.border,
+                width: selected ? palette.borderWidth + 1 : palette.borderWidth,
+              ),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  selected ? Icons.check_circle : Icons.circle_outlined,
+                  color: selected ? palette.selected : palette.textSecondary,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    mode.label,
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: selected ? FontWeight.w900 : FontWeight.w600,
+                      color: palette.textPrimary,
+                    ),
+                  ),
+                ),
+                if (selected)
+                  Text(
+                    'Избрано',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w800,
+                      color: palette.selected,
+                    ),
+                  ),
+              ],
+            ),
+          ),
         ),
       ),
     );

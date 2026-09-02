@@ -1,28 +1,45 @@
 import 'package:flutter/material.dart';
+import 'core/accessibility/accessibility_settings.dart';
 import 'core/constants/colors.dart';
 import 'core/constants/typography.dart';
 import 'features/home/home_screen.dart';
 
-class KidsLearnApp extends StatelessWidget {
+class KidsLearnApp extends StatefulWidget {
   const KidsLearnApp({super.key});
 
   @override
+  State<KidsLearnApp> createState() => _KidsLearnAppState();
+}
+
+class _KidsLearnAppState extends State<KidsLearnApp> {
+  final AccessibilitySettings _accessibilitySettings = AccessibilitySettings();
+
+  @override
+  void dispose() {
+    _accessibilitySettings.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Учи со Забава',
-      debugShowCheckedModeBanner: false,
-      theme: _buildTheme(),
-      builder: (context, child) {
-        final mediaQuery = MediaQuery.of(context);
-        final systemScale = mediaQuery.textScaler.scale(1.0);
-        return MediaQuery(
-          data: mediaQuery.copyWith(
-            textScaler: TextScaler.linear(systemScale * 1.1),
-          ),
-          child: child!,
-        );
-      },
-      home: const HomeScreen(),
+    return AccessibilityScope(
+      settings: _accessibilitySettings,
+      child: MaterialApp(
+        title: 'Учи со Забава',
+        debugShowCheckedModeBanner: false,
+        theme: _buildTheme(),
+        builder: (context, child) {
+          final mediaQuery = MediaQuery.of(context);
+          final systemScale = mediaQuery.textScaler.scale(1.0);
+          return MediaQuery(
+            data: mediaQuery.copyWith(
+              textScaler: TextScaler.linear(systemScale * 1.1),
+            ),
+            child: child!,
+          );
+        },
+        home: const HomeScreen(),
+      ),
     );
   }
 

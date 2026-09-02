@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/plant_model.dart';
 import '../../../core/services/vibration_service.dart';
 import '../../../core/constants/dimensions.dart';
+import '../../../core/accessibility/accessibility_settings.dart';
 
 class PlantCard extends StatefulWidget {
   final PlantModel plant;
@@ -24,17 +25,6 @@ class _PlantCardState extends State<PlantCard>
   late AnimationController _ctrl;
   late Animation<double> _scale;
   final _vib = VibrationService();
-
-  static const _colors = [
-    Color(0xFF11998e),
-    Color(0xFF38ef7d),
-    Color(0xFF00B894),
-    Color(0xFF55EFC4),
-    Color(0xFF00CEC9),
-    Color(0xFF6C5CE7),
-  ];
-
-  Color get _color => _colors[widget.index % _colors.length];
 
   @override
   void initState() {
@@ -64,7 +54,9 @@ class _PlantCardState extends State<PlantCard>
 
   @override
   Widget build(BuildContext context) {
-    final light = Color.lerp(_color, Colors.white, 0.85)!;
+    final palette = AccessibilityScope.of(context).palette;
+    final color = palette.itemAccent(widget.index);
+    final light = palette.tintedSurface(color);
     return GestureDetector(
       onTap: _tap,
       child: ScaleTransition(
@@ -74,10 +66,13 @@ class _PlantCardState extends State<PlantCard>
           decoration: BoxDecoration(
             color: light,
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: _color.withOpacity(0.2), width: 2),
+            border: Border.all(
+              color: palette.border,
+              width: palette.borderWidth,
+            ),
             boxShadow: [
               BoxShadow(
-                color: _color.withOpacity(0.15),
+                color: color.withValues(alpha: 0.15),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
@@ -90,11 +85,11 @@ class _PlantCardState extends State<PlantCard>
                 width: 70,
                 height: 70,
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: palette.controlBackground,
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: _color.withOpacity(0.2),
+                      color: color.withValues(alpha: 0.2),
                       blurRadius: 8,
                       offset: const Offset(0, 3),
                     ),
@@ -119,7 +114,7 @@ class _PlantCardState extends State<PlantCard>
                 style: TextStyle(
                   fontSize: AppDimensions.cardTitleFont,
                   fontWeight: FontWeight.w800,
-                  color: _color,
+                  color: palette.textPrimary,
                 ),
                 textAlign: TextAlign.center,
                 maxLines: 2,
@@ -131,7 +126,7 @@ class _PlantCardState extends State<PlantCard>
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
-                  color: _color.withOpacity(0.7),
+                  color: palette.textSecondary,
                 ),
                 textAlign: TextAlign.center,
                 maxLines: 1,

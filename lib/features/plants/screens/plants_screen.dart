@@ -8,6 +8,7 @@ import '../../../core/services/audio_service.dart';
 import '../../../core/services/vibration_service.dart';
 import '../../../core/constants/dimensions.dart';
 import '../../../core/constants/typography.dart';
+import '../../../core/accessibility/accessibility_settings.dart';
 
 class PlantsScreen extends StatefulWidget {
   const PlantsScreen({super.key});
@@ -40,17 +41,12 @@ class _PlantsScreenState extends State<PlantsScreen> {
     await _tts.speak(plant.funFact);
   }
 
-  static const _plantsGradient = LinearGradient(
-    colors: [Color(0xFF11998e), Color(0xFF38ef7d)],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-  );
-
   @override
   Widget build(BuildContext context) {
+    final palette = AccessibilityScope.of(context).palette;
     return PageScaffold(
       title: '🌿 Растенија',
-      gradientColors: _plantsGradient.colors,
+      gradientColors: palette.plantsGradient.colors,
       child: Column(
         children: [
           _buildFilter(),
@@ -62,6 +58,7 @@ class _PlantsScreenState extends State<PlantsScreen> {
   }
 
   Widget _buildFilter() {
+    final palette = AccessibilityScope.of(context).palette;
     return Container(
       height: 64,
       margin: const EdgeInsets.only(top: 16),
@@ -86,11 +83,17 @@ class _PlantsScreenState extends State<PlantsScreen> {
                   vertical: 14,
                 ),
                 decoration: BoxDecoration(
-                  color: active ? const Color(0xFF11998e) : Colors.white,
+                  color: active ? palette.selected : palette.controlBackground,
                   borderRadius: BorderRadius.circular(14),
+                  border: Border.all(
+                    color: active ? palette.selected : palette.border,
+                    width: active
+                        ? palette.borderWidth + 1
+                        : palette.borderWidth,
+                  ),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFF11998e).withOpacity(0.15),
+                      color: palette.primary.withValues(alpha: 0.15),
                       blurRadius: 6,
                     ),
                   ],
@@ -100,7 +103,7 @@ class _PlantsScreenState extends State<PlantsScreen> {
                   style: TextStyle(
                     fontSize: AppTypeScale.interactive,
                     fontWeight: FontWeight.w700,
-                    color: active ? Colors.white : const Color(0xFF11998e),
+                    color: active ? palette.onCard : palette.textPrimary,
                   ),
                 ),
               ),
@@ -132,13 +135,15 @@ class _PlantsScreenState extends State<PlantsScreen> {
 
   Widget _buildBanner() {
     final p = _selected!;
+    final palette = AccessibilityScope.of(context).palette;
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        gradient: _plantsGradient,
+        gradient: palette.plantsGradient,
         borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: palette.border, width: palette.borderWidth),
       ),
       child: Row(
         children: [
@@ -150,18 +155,18 @@ class _PlantsScreenState extends State<PlantsScreen> {
               children: [
                 Text(
                   p.name,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: AppTypeScale.itemTitle,
                     fontWeight: FontWeight.w800,
-                    color: Colors.white,
+                    color: palette.onCard,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   p.funFact,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: AppTypeScale.secondary,
-                    color: Colors.white70,
+                    color: palette.onCardSecondary,
                   ),
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,

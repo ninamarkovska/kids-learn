@@ -3,7 +3,7 @@ import '../data/animals_data.dart';
 import '../models/animal_model.dart';
 import '../widgets/animal_card.dart';
 import 'animal_detail_screen.dart';
-import '../../../core/constants/colors.dart';
+import '../../../core/accessibility/accessibility_settings.dart';
 import '../../../core/constants/dimensions.dart';
 import '../../../core/constants/typography.dart';
 import '../../../core/widgets/page_scaffold.dart';
@@ -29,9 +29,10 @@ class _AnimalsScreenState extends State<AnimalsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final palette = AccessibilityScope.of(context).palette;
     return PageScaffold(
       title: '🐾 Животни',
-      gradientColors: AppColors.animalsGradient.colors,
+      gradientColors: palette.animalsGradient.colors,
       child: Column(
         children: [
           // Категории
@@ -44,6 +45,7 @@ class _AnimalsScreenState extends State<AnimalsScreen> {
   }
 
   Widget _buildCategoryFilter() {
+    final palette = AccessibilityScope.of(context).palette;
     return Container(
       height: 64,
       margin: const EdgeInsets.only(top: 16),
@@ -65,11 +67,19 @@ class _AnimalsScreenState extends State<AnimalsScreen> {
                   vertical: 14,
                 ),
                 decoration: BoxDecoration(
-                  color: isSelected ? AppColors.animalsColor : Colors.white,
+                  color: isSelected
+                      ? palette.selected
+                      : palette.controlBackground,
                   borderRadius: BorderRadius.circular(14),
+                  border: Border.all(
+                    color: isSelected ? palette.selected : palette.border,
+                    width: isSelected
+                        ? palette.borderWidth + 1
+                        : palette.borderWidth,
+                  ),
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.animalsColor.withOpacity(0.15),
+                      color: palette.primary.withValues(alpha: 0.15),
                       blurRadius: 6,
                       offset: const Offset(0, 2),
                     ),
@@ -91,8 +101,8 @@ class _AnimalsScreenState extends State<AnimalsScreen> {
                         fontSize: AppTypeScale.interactive,
                         fontWeight: FontWeight.w700,
                         color: isSelected
-                            ? Colors.white
-                            : AppColors.animalsColor,
+                            ? palette.onCard
+                            : palette.textPrimary,
                       ),
                     ),
                   ],

@@ -1,7 +1,8 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import '../models/question_model.dart';
-import '../../../core/constants/colors.dart';
+import '../../../core/accessibility/accessibility_settings.dart';
+import '../../../core/accessibility/accessible_palette.dart';
 import '../../../core/services/tts_service.dart';
 import '../../../core/services/vibration_service.dart';
 import '../../../core/widgets/custom_button.dart';
@@ -28,6 +29,8 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin {
   String? _selected;
   bool _answered = false;
   bool _finished = false;
+
+  AccessiblePalette get _palette => AccessibilityScope.of(context).palette;
 
   late AnimationController _shakeCtrl;
   late AnimationController _successCtrl;
@@ -193,7 +196,7 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: _palette.backgroundGradient.colors.first,
       body: SafeArea(child: _finished ? _buildResult() : _buildQuestion()),
     );
   }
@@ -221,7 +224,7 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin {
                         ? 'Резултат 🏆'
                         : 'Следно →',
                     onTap: _next,
-                    backgroundColor: AppColors.quizColor,
+                    backgroundColor: _palette.primary,
                     width: double.infinity,
                   ),
                 ],
@@ -237,7 +240,7 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        gradient: AppColors.quizGradient,
+        gradient: _palette.quizGradient,
         borderRadius: const BorderRadius.only(
           bottomLeft: Radius.circular(24),
           bottomRight: Radius.circular(24),
@@ -251,35 +254,35 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin {
               width: 44,
               height: 44,
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.25),
+                color: _palette.onCard.withValues(alpha: 0.25),
                 borderRadius: BorderRadius.circular(14),
               ),
-              child: const Icon(Icons.close_rounded, color: Colors.white),
+              child: Icon(Icons.close_rounded, color: _palette.onCard),
             ),
           ),
-          const Expanded(
+          Expanded(
             child: Text(
               '🧠 Квиз',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: AppTypeScale.screenTitle,
                 fontWeight: FontWeight.w800,
-                color: Colors.white,
+                color: _palette.onCard,
               ),
             ),
           ),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.25),
+              color: _palette.onCard.withValues(alpha: 0.25),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Text(
               '⭐ $_score',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: AppTypeScale.itemTitle,
                 fontWeight: FontWeight.w800,
-                color: Colors.white,
+                color: _palette.onCard,
               ),
             ),
           ),
@@ -300,18 +303,18 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin {
             children: [
               Text(
                 'Прашање ${_current + 1} од ${_questions.length}',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: AppTypeScale.body,
                   fontWeight: FontWeight.w600,
-                  color: AppColors.textSecondary,
+                  color: _palette.textSecondary,
                 ),
               ),
               Text(
                 '${(progress * 100).round()}%',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: AppTypeScale.body,
                   fontWeight: FontWeight.w700,
-                  color: AppColors.quizColor,
+                  color: _palette.primary,
                 ),
               ),
             ],
@@ -322,8 +325,8 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin {
             child: LinearProgressIndicator(
               value: progress,
               minHeight: 10,
-              backgroundColor: Colors.grey.shade200,
-              valueColor: const AlwaysStoppedAnimation(AppColors.quizColor),
+              backgroundColor: _palette.selectedBackground,
+              valueColor: AlwaysStoppedAnimation(_palette.primary),
             ),
           ),
         ],
@@ -342,11 +345,15 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin {
         width: double.infinity,
         padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
-          gradient: AppColors.quizGradient,
+          gradient: _palette.quizGradient,
           borderRadius: BorderRadius.circular(24),
+          border: Border.all(
+            color: _palette.border,
+            width: _palette.borderWidth,
+          ),
           boxShadow: [
             BoxShadow(
-              color: AppColors.quizColor.withOpacity(0.3),
+              color: _palette.primary.withValues(alpha: 0.3),
               blurRadius: 16,
               offset: const Offset(0, 6),
             ),
@@ -358,10 +365,10 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin {
             const SizedBox(height: 12),
             Text(
               q.question,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: AppTypeScale.sectionTitle,
                 fontWeight: FontWeight.w800,
-                color: Colors.white,
+                color: _palette.onCard,
               ),
               textAlign: TextAlign.center,
             ),
@@ -384,19 +391,19 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin {
   }
 
   Widget _buildOptionBtn(String opt, QuestionModel q) {
-    Color bg = Colors.white;
-    Color border = Colors.grey.shade200;
-    Color text = AppColors.textPrimary;
+    Color bg = _palette.controlBackground;
+    Color border = _palette.border;
+    Color text = _palette.textPrimary;
 
     if (_answered) {
       if (opt == q.correctAnswer) {
-        bg = AppColors.correctLight;
-        border = AppColors.correct;
-        text = AppColors.correct;
+        bg = _palette.correctBackground;
+        border = _palette.correct;
+        text = _palette.correct;
       } else if (opt == _selected) {
-        bg = AppColors.incorrectLight;
-        border = AppColors.incorrect;
-        text = AppColors.incorrect;
+        bg = _palette.incorrectBackground;
+        border = _palette.incorrect;
+        text = _palette.incorrect;
       }
     }
 
@@ -410,7 +417,7 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin {
           border: Border.all(color: border, width: 2),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: _palette.border.withValues(alpha: 0.1),
               blurRadius: 6,
               offset: const Offset(0, 2),
             ),
@@ -441,10 +448,12 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
       decoration: BoxDecoration(
-        color: correct ? AppColors.correctLight : AppColors.incorrectLight,
+        color: correct
+            ? _palette.correctBackground
+            : _palette.incorrectBackground,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: correct ? AppColors.correct : AppColors.incorrect,
+          color: correct ? _palette.correct : _palette.incorrect,
           width: 2,
         ),
       ),
@@ -460,7 +469,7 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin {
               style: TextStyle(
                 fontSize: AppTypeScale.interactive,
                 fontWeight: FontWeight.w700,
-                color: correct ? AppColors.correct : AppColors.incorrect,
+                color: correct ? _palette.correct : _palette.incorrect,
               ),
             ),
           ),
@@ -484,11 +493,15 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin {
             Container(
               padding: const EdgeInsets.all(28),
               decoration: BoxDecoration(
-                gradient: AppColors.quizGradient,
+                gradient: _palette.quizGradient,
+                border: Border.all(
+                  color: _palette.border,
+                  width: _palette.borderWidth,
+                ),
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.quizColor.withOpacity(0.4),
+                    color: _palette.primary.withValues(alpha: 0.4),
                     blurRadius: 20,
                     spreadRadius: 4,
                   ),
@@ -497,12 +510,12 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin {
               child: Text(emoji, style: const TextStyle(fontSize: 64)),
             ),
             const SizedBox(height: 28),
-            const Text(
+            Text(
               'Квизот заврши!',
               style: TextStyle(
                 fontSize: 32,
                 fontWeight: FontWeight.w800,
-                color: AppColors.textPrimary,
+                color: _palette.textPrimary,
               ),
             ),
             const SizedBox(height: 12),
@@ -511,18 +524,18 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin {
                 children: [
                   TextSpan(
                     text: '$_score',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 56,
                       fontWeight: FontWeight.w900,
-                      color: AppColors.quizColor,
+                      color: _palette.primary,
                     ),
                   ),
                   TextSpan(
                     text: ' / $total',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.w600,
-                      color: AppColors.textSecondary,
+                      color: _palette.textSecondary,
                     ),
                   ),
                 ],
@@ -531,9 +544,9 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin {
             const SizedBox(height: 8),
             Text(
               '$pct% точни одговори',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: AppTypeScale.itemTitle,
-                color: AppColors.textSecondary,
+                color: _palette.textSecondary,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -541,15 +554,19 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin {
             Container(
               padding: const EdgeInsets.all(18),
               decoration: BoxDecoration(
-                color: AppColors.quizColorLight,
+                color: _palette.selectedBackground,
                 borderRadius: BorderRadius.circular(18),
+                border: Border.all(
+                  color: _palette.border,
+                  width: _palette.borderWidth,
+                ),
               ),
               child: Text(
                 msg,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: AppTypeScale.sectionTitle,
                   fontWeight: FontWeight.w700,
-                  color: AppColors.quizColor,
+                  color: _palette.primary,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -566,7 +583,7 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin {
                 _answered = false;
                 _finished = false;
               }),
-              backgroundColor: AppColors.quizColor,
+              backgroundColor: _palette.primary,
               width: double.infinity,
             ),
             const SizedBox(height: 14),
@@ -574,8 +591,8 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin {
               text: 'Дома',
               emoji: '🏠',
               onTap: () => Navigator.pop(context),
-              backgroundColor: Colors.white,
-              textColor: AppColors.textPrimary,
+              backgroundColor: _palette.controlBackground,
+              textColor: _palette.textPrimary,
               width: double.infinity,
               shadow: false,
             ),

@@ -3,6 +3,7 @@ import '../models/letter_model.dart';
 import '../../../core/services/vibration_service.dart';
 import '../../../core/constants/dimensions.dart';
 import '../../../core/constants/typography.dart';
+import '../../../core/accessibility/accessibility_settings.dart';
 
 class LetterCard extends StatefulWidget {
   final LetterModel letter;
@@ -25,19 +26,6 @@ class _LetterCardState extends State<LetterCard>
   late AnimationController _ctrl;
   late Animation<double> _scale;
   final _vib = VibrationService();
-
-  static const _colors = [
-    Color(0xFF6C5CE7),
-    Color(0xFF00B894),
-    Color(0xFFE17055),
-    Color(0xFFFF9F43),
-    Color(0xFF1E90FF),
-    Color(0xFFFF6EB4),
-    Color(0xFF00CEC9),
-    Color(0xFFFF7675),
-  ];
-
-  Color get _color => _colors[widget.index % _colors.length];
 
   @override
   void initState() {
@@ -67,7 +55,9 @@ class _LetterCardState extends State<LetterCard>
 
   @override
   Widget build(BuildContext context) {
-    final light = Color.lerp(_color, Colors.white, 0.88)!;
+    final palette = AccessibilityScope.of(context).palette;
+    final color = palette.itemAccent(widget.index);
+    final light = palette.tintedSurface(color, 0.88);
     return GestureDetector(
       onTap: _tap,
       child: ScaleTransition(
@@ -77,10 +67,13 @@ class _LetterCardState extends State<LetterCard>
           decoration: BoxDecoration(
             color: light,
             borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: _color.withOpacity(0.25), width: 2),
+            border: Border.all(
+              color: palette.border,
+              width: palette.borderWidth,
+            ),
             boxShadow: [
               BoxShadow(
-                color: _color.withOpacity(0.12),
+                color: color.withValues(alpha: 0.12),
                 blurRadius: 8,
                 offset: const Offset(0, 3),
               ),
@@ -94,7 +87,7 @@ class _LetterCardState extends State<LetterCard>
                 style: TextStyle(
                   fontSize: 42,
                   fontWeight: FontWeight.w900,
-                  color: _color,
+                  color: palette.textPrimary,
                 ),
               ),
               const SizedBox(height: 4),
@@ -103,7 +96,7 @@ class _LetterCardState extends State<LetterCard>
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.w700,
-                  color: _color.withOpacity(0.6),
+                  color: palette.textSecondary,
                 ),
               ),
               const SizedBox(height: 4),
@@ -114,7 +107,7 @@ class _LetterCardState extends State<LetterCard>
                 style: TextStyle(
                   fontSize: AppTypeScale.interactive,
                   fontWeight: FontWeight.w700,
-                  color: _color,
+                  color: palette.textPrimary,
                 ),
                 textAlign: TextAlign.center,
                 maxLines: 1,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../constants/typography.dart';
+import '../accessibility/accessibility_settings.dart';
 
 class ImageCard extends StatelessWidget {
   final String? imagePath;
@@ -23,17 +24,19 @@ class ImageCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final palette = AccessibilityScope.of(context).palette;
     return GestureDetector(
       onTap: onTap,
       child: Container(
         width: width,
         height: height,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: palette.controlBackground,
           borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: palette.border, width: palette.borderWidth),
           boxShadow: [
             BoxShadow(
-              color: color.withOpacity(0.2),
+              color: color.withValues(alpha: 0.2),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -59,7 +62,7 @@ class ImageCard extends StatelessWidget {
               style: TextStyle(
                 fontSize: AppTypeScale.itemTitle,
                 fontWeight: FontWeight.w700,
-                color: color,
+                color: palette.textPrimary,
               ),
               textAlign: TextAlign.center,
             ),

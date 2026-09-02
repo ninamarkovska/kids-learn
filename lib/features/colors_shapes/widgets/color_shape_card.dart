@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/color_shape_model.dart';
 import '../../../core/services/vibration_service.dart';
 import '../../../core/constants/dimensions.dart';
+import '../../../core/accessibility/accessibility_settings.dart';
 
 class ColorShapeCard extends StatefulWidget {
   final ColorShapeModel item;
@@ -47,7 +48,8 @@ class _ColorShapeCardState extends State<ColorShapeCard>
 
   @override
   Widget build(BuildContext context) {
-    final light = Color.lerp(widget.item.displayColor, Colors.white, 0.82)!;
+    final palette = AccessibilityScope.of(context).palette;
+    final light = palette.tintedSurface(widget.item.displayColor, 0.88);
     return GestureDetector(
       onTap: _tap,
       child: ScaleTransition(
@@ -58,12 +60,12 @@ class _ColorShapeCardState extends State<ColorShapeCard>
             color: light,
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: widget.item.displayColor.withOpacity(0.25),
-              width: 2,
+              color: palette.border,
+              width: palette.borderWidth,
             ),
             boxShadow: [
               BoxShadow(
-                color: widget.item.displayColor.withOpacity(0.15),
+                color: palette.border.withValues(alpha: 0.15),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
@@ -81,7 +83,7 @@ class _ColorShapeCardState extends State<ColorShapeCard>
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
-                        color: widget.item.displayColor.withOpacity(0.4),
+                        color: palette.border.withValues(alpha: 0.3),
                         blurRadius: 10,
                         offset: const Offset(0, 4),
                       ),
@@ -96,7 +98,7 @@ class _ColorShapeCardState extends State<ColorShapeCard>
                 style: TextStyle(
                   fontSize: AppDimensions.cardTitleFont,
                   fontWeight: FontWeight.w800,
-                  color: widget.item.displayColor,
+                  color: palette.textPrimary,
                 ),
                 textAlign: TextAlign.center,
                 maxLines: 2,

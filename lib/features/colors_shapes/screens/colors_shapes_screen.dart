@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../data/colors_shapes_data.dart';
 import '../models/color_shape_model.dart';
 import '../widgets/color_shape_card.dart';
-import '../../../core/constants/colors.dart';
+import '../../../core/accessibility/accessibility_settings.dart';
 import '../../../core/widgets/page_scaffold.dart';
 import '../../../core/services/tts_service.dart';
 import '../../../core/services/vibration_service.dart';
@@ -38,9 +38,10 @@ class _ColorsShapesScreenState extends State<ColorsShapesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final palette = AccessibilityScope.of(context).palette;
     return PageScaffold(
       title: '🎨 Бои и Форми',
-      gradientColors: AppColors.colorsGradient.colors,
+      gradientColors: palette.colorsShapesGradient.colors,
       child: Column(
         children: [
           _buildTabs(),
@@ -52,14 +53,19 @@ class _ColorsShapesScreenState extends State<ColorsShapesScreen> {
   }
 
   Widget _buildTabs() {
+    final palette = AccessibilityScope.of(context).palette;
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: palette.controlBackground,
         borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: palette.border, width: palette.borderWidth),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 8),
+          BoxShadow(
+            color: palette.border.withValues(alpha: 0.12),
+            blurRadius: 8,
+          ),
         ],
       ),
       child: Row(
@@ -70,6 +76,7 @@ class _ColorsShapesScreenState extends State<ColorsShapesScreen> {
 
   Widget _tabBtn(String key, String label) {
     final active = _tab == key;
+    final palette = AccessibilityScope.of(context).palette;
     return Expanded(
       child: GestureDetector(
         onTap: () => setState(() {
@@ -80,8 +87,11 @@ class _ColorsShapesScreenState extends State<ColorsShapesScreen> {
           duration: const Duration(milliseconds: 200),
           padding: const EdgeInsets.symmetric(vertical: 12),
           decoration: BoxDecoration(
-            color: active ? AppColors.colorsShapesColor : Colors.transparent,
+            color: active ? palette.selected : Colors.transparent,
             borderRadius: BorderRadius.circular(12),
+            border: active
+                ? Border.all(color: palette.border, width: palette.borderWidth)
+                : null,
           ),
           child: Text(
             label,
@@ -89,7 +99,7 @@ class _ColorsShapesScreenState extends State<ColorsShapesScreen> {
             style: TextStyle(
               fontSize: AppTypeScale.interactive,
               fontWeight: FontWeight.w700,
-              color: active ? Colors.white : AppColors.textSecondary,
+              color: active ? palette.onCard : palette.textSecondary,
             ),
           ),
         ),
@@ -99,14 +109,18 @@ class _ColorsShapesScreenState extends State<ColorsShapesScreen> {
 
   Widget _buildSelectedBanner() {
     final item = _selected!;
+    final palette = AccessibilityScope.of(context).palette;
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: Color.lerp(item.displayColor, Colors.white, 0.85),
+        color: palette.selectedBackground,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: item.displayColor.withOpacity(0.3), width: 2),
+        border: Border.all(
+          color: palette.selected,
+          width: palette.borderWidth + 1,
+        ),
       ),
       child: Row(
         children: [
@@ -131,14 +145,14 @@ class _ColorsShapesScreenState extends State<ColorsShapesScreen> {
                   style: TextStyle(
                     fontSize: AppTypeScale.itemTitle,
                     fontWeight: FontWeight.w800,
-                    color: item.displayColor,
+                    color: palette.textPrimary,
                   ),
                 ),
                 Text(
                   item.description,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: AppTypeScale.secondary,
-                    color: AppColors.textSecondary,
+                    color: palette.textSecondary,
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
@@ -146,7 +160,7 @@ class _ColorsShapesScreenState extends State<ColorsShapesScreen> {
               ],
             ),
           ),
-          Icon(Icons.volume_up_rounded, color: item.displayColor),
+          Icon(Icons.volume_up_rounded, color: palette.selected),
         ],
       ),
     );

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../constants/colors.dart';
+import '../accessibility/accessibility_settings.dart';
 import '../constants/typography.dart';
 import '../services/vibration_service.dart';
 
@@ -67,7 +67,8 @@ class _CustomButtonState extends State<CustomButton>
 
   @override
   Widget build(BuildContext context) {
-    final bgColor = widget.backgroundColor ?? AppColors.primary;
+    final palette = AccessibilityScope.of(context).palette;
+    final bgColor = widget.backgroundColor ?? palette.primary;
 
     return GestureDetector(
       onTap: _handleTap,
@@ -79,10 +80,14 @@ class _CustomButtonState extends State<CustomButton>
           decoration: BoxDecoration(
             color: bgColor,
             borderRadius: BorderRadius.circular(widget.borderRadius),
+            border: Border.all(
+              color: palette.border,
+              width: palette.borderWidth,
+            ),
             boxShadow: widget.shadow
                 ? [
                     BoxShadow(
-                      color: bgColor.withOpacity(0.4),
+                      color: bgColor.withValues(alpha: 0.4),
                       blurRadius: 12,
                       offset: const Offset(0, 6),
                     ),
@@ -105,7 +110,7 @@ class _CustomButtonState extends State<CustomButton>
                   style: TextStyle(
                     fontSize: widget.fontSize,
                     fontWeight: FontWeight.w700,
-                    color: widget.textColor ?? Colors.white,
+                    color: widget.textColor ?? palette.onCard,
                   ),
                 ),
               ],

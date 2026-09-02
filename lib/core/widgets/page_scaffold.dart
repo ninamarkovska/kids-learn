@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import '../constants/colors.dart';
+import '../accessibility/accessibility_settings.dart';
 import '../constants/typography.dart';
 
 class PageScaffold extends StatelessWidget {
   final String title;
   final Widget child;
-  final List<Color> gradientColors;
+  final List<Color>? gradientColors;
   final Widget? floatingActionButton;
   final bool showBack;
 
@@ -13,15 +13,17 @@ class PageScaffold extends StatelessWidget {
     super.key,
     required this.title,
     required this.child,
-    this.gradientColors = const [AppColors.primary, Color(0xFFFF9F43)],
+    this.gradientColors,
     this.floatingActionButton,
     this.showBack = true,
   });
 
   @override
   Widget build(BuildContext context) {
+    final palette = AccessibilityScope.of(context).palette;
+    final headerColors = gradientColors ?? [palette.primary, palette.accent];
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: palette.backgroundGradient.colors.first,
       body: SafeArea(
         child: Column(
           children: [
@@ -30,7 +32,7 @@ class PageScaffold extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: gradientColors,
+                  colors: headerColors,
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -40,7 +42,7 @@ class PageScaffold extends StatelessWidget {
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: gradientColors.first.withOpacity(0.3),
+                    color: headerColors.first.withValues(alpha: 0.3),
                     blurRadius: 12,
                     offset: const Offset(0, 4),
                   ),
@@ -55,12 +57,12 @@ class PageScaffold extends StatelessWidget {
                         width: 44,
                         height: 44,
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.25),
+                          color: palette.onCard.withValues(alpha: 0.25),
                           borderRadius: BorderRadius.circular(14),
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.arrow_back_ios_new_rounded,
-                          color: Colors.white,
+                          color: palette.onCard,
                           size: 20,
                         ),
                       ),
@@ -71,10 +73,10 @@ class PageScaffold extends StatelessWidget {
                     child: Text(
                       title,
                       textAlign: TextAlign.center,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: AppTypeScale.screenTitle,
                         fontWeight: FontWeight.w800,
-                        color: Colors.white,
+                        color: palette.onCard,
                         letterSpacing: 0.5,
                       ),
                     ),
