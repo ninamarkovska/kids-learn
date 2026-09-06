@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
+
 import '../models/animal_model.dart';
 import '../../../core/accessibility/accessibility_settings.dart';
-import '../../../core/services/tts_service.dart';
 import '../../../core/services/vibration_service.dart';
-import '../../../core/widgets/custom_button.dart';
 import '../../../core/services/audio_service.dart';
+import '../../../core/widgets/custom_button.dart';
 import '../../../core/constants/typography.dart';
 
 class AnimalDetailScreen extends StatefulWidget {
   final AnimalModel animal;
 
-  const AnimalDetailScreen({super.key, required this.animal});
+  const AnimalDetailScreen({
+    super.key,
+    required this.animal,
+  });
 
   @override
   State<AnimalDetailScreen> createState() => _AnimalDetailScreenState();
@@ -18,9 +21,9 @@ class AnimalDetailScreen extends StatefulWidget {
 
 class _AnimalDetailScreenState extends State<AnimalDetailScreen>
     with SingleTickerProviderStateMixin {
-  final _tts = TtsService();
-  final _audio = AudioService();
   final _vibration = VibrationService();
+  final _audio = AudioService();
+
   bool _isSpeaking = false;
 
   late AnimationController _bounceController;
@@ -29,33 +32,46 @@ class _AnimalDetailScreenState extends State<AnimalDetailScreen>
   @override
   void initState() {
     super.initState();
+
     _bounceController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 600),
     );
-    _bounceAnim = Tween<double>(begin: 1.0, end: 1.15).animate(
-      CurvedAnimation(parent: _bounceController, curve: Curves.elasticInOut),
+
+    _bounceAnim = Tween<double>(
+      begin: 1.0,
+      end: 1.15,
+    ).animate(
+      CurvedAnimation(
+        parent: _bounceController,
+        curve: Curves.elasticInOut,
+      ),
     );
+
+    // Автоматски пушти MP3 кога ќе се отвори страницата
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _speakAnimal();
+    });
   }
 
   @override
   void dispose() {
-    _tts.stop();
     _bounceController.dispose();
     super.dispose();
   }
 
-  void _speakAnimal() async {
+  Future<void> _speakAnimal() async {
+    if (_isSpeaking) return;
+
     setState(() => _isSpeaking = true);
+
+    _vibration.success();
     _bounceController.repeat(reverse: true);
 
     try {
       await _audio.playAsset(widget.animal.audioPath);
-      await Future.delayed(const Duration(milliseconds: 1500));
     } catch (e) {
-      await _tts.speakAnimal(widget.animal.name);
-      await Future.delayed(const Duration(milliseconds: 800));
-      await _tts.speak(widget.animal.sound);
+      debugPrint("AUDIO ERROR: $e");
     }
 
     if (mounted) {
@@ -68,6 +84,7 @@ class _AnimalDetailScreenState extends State<AnimalDetailScreen>
   @override
   Widget build(BuildContext context) {
     final palette = AccessibilityScope.of(context).palette;
+
     return Scaffold(
       backgroundColor: palette.backgroundGradient.colors.first,
       body: SafeArea(
@@ -90,6 +107,7 @@ class _AnimalDetailScreenState extends State<AnimalDetailScreen>
 
   Widget _buildHeader(BuildContext context) {
     final palette = AccessibilityScope.of(context).palette;
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
@@ -136,6 +154,7 @@ class _AnimalDetailScreenState extends State<AnimalDetailScreen>
 
   Widget _buildAnimalImage() {
     final palette = AccessibilityScope.of(context).palette;
+
     return Container(
       margin: const EdgeInsets.all(24),
       width: double.infinity,
@@ -143,7 +162,10 @@ class _AnimalDetailScreenState extends State<AnimalDetailScreen>
       decoration: BoxDecoration(
         color: palette.tintedSurface(palette.animalsGradient.colors.first),
         borderRadius: BorderRadius.circular(28),
-        border: Border.all(color: palette.border, width: palette.borderWidth),
+        border: Border.all(
+          color: palette.border,
+          width: palette.borderWidth,
+        ),
         boxShadow: [
           BoxShadow(
             color: palette.primary.withValues(alpha: 0.15),
@@ -172,13 +194,17 @@ class _AnimalDetailScreenState extends State<AnimalDetailScreen>
 
   Widget _buildInfoCard() {
     final palette = AccessibilityScope.of(context).palette;
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 24),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: palette.controlBackground,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: palette.border, width: palette.borderWidth),
+        border: Border.all(
+          color: palette.border,
+          width: palette.borderWidth,
+        ),
         boxShadow: [
           BoxShadow(
             color: palette.border.withValues(alpha: 0.12),
@@ -205,6 +231,7 @@ class _AnimalDetailScreenState extends State<AnimalDetailScreen>
 
   Widget _buildInfoRow(String icon, String label, String value) {
     final palette = AccessibilityScope.of(context).palette;
+
     return Row(
       children: [
         Text(icon, style: const TextStyle(fontSize: 22)),
@@ -236,13 +263,17 @@ class _AnimalDetailScreenState extends State<AnimalDetailScreen>
 
   Widget _buildFunFact() {
     final palette = AccessibilityScope.of(context).palette;
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: palette.animalsGradient,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: palette.border, width: palette.borderWidth),
+        border: Border.all(
+          color: palette.border,
+          width: palette.borderWidth,
+        ),
       ),
       child: Row(
         children: [
@@ -279,6 +310,7 @@ class _AnimalDetailScreenState extends State<AnimalDetailScreen>
 
   Widget _buildSpeakButton() {
     final palette = AccessibilityScope.of(context).palette;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: CustomButton(
