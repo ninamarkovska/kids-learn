@@ -14,14 +14,13 @@ class AudioService {
   Future<void> playAsset(String assetPath) async {
     try {
       await stop();
+
+      debugPrint("PLAYING >>> $assetPath"); // <-- додај ја оваа линија
+
       _isPlaying = true;
       await _player.play(AssetSource(assetPath));
-      _player.onPlayerComplete.listen((_) {
-        _isPlaying = false;
-      });
     } catch (e) {
-      _isPlaying = false;
-      debugPrint('AudioService error: $e');
+      debugPrint("ERROR >>> $e");
     }
   }
 

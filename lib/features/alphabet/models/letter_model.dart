@@ -2,7 +2,7 @@ class LetterModel {
   final String letter;
   final String letterLower;
   final String emoji;
-  final String word;       // пример збор
+  final String word;
   final String audioPath;
   final String imagePath;
   final String funFact;

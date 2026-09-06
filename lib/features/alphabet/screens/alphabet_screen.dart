@@ -4,7 +4,6 @@ import '../models/letter_model.dart';
 import '../widgets/letter_card.dart';
 import '../../../core/accessibility/accessibility_settings.dart';
 import '../../../core/widgets/page_scaffold.dart';
-import '../../../core/services/tts_service.dart';
 import '../../../core/services/vibration_service.dart';
 import '../../../core/services/audio_service.dart';
 import '../../../core/constants/dimensions.dart';
@@ -12,12 +11,12 @@ import '../../../core/constants/typography.dart';
 
 class AlphabetScreen extends StatefulWidget {
   const AlphabetScreen({super.key});
+
   @override
   State<AlphabetScreen> createState() => _AlphabetScreenState();
 }
 
 class _AlphabetScreenState extends State<AlphabetScreen> {
-  final _tts = TtsService();
   final _vib = VibrationService();
   final _audio = AudioService();
   LetterModel? _selected;
@@ -26,27 +25,25 @@ class _AlphabetScreenState extends State<AlphabetScreen> {
     setState(() => _selected = letter);
     _vib.success();
 
+    // Се пушта само твоето снимено аудио.
     await _audio.playAsset(letter.audioPath);
-    await _tts.speakLetter(letter.letter);
-    await Future.delayed(const Duration(milliseconds: 600));
-    await _tts.speak(letter.word);
   }
 
   @override
   Widget build(BuildContext context) {
     final palette = AccessibilityScope.of(context).palette;
+
     return PageScaffold(
       title: '🔤 Азбука',
       gradientColors: palette.alphabetGradient.colors,
       child: Column(
         children: [
           if (_selected != null) _buildBanner(),
+
           Expanded(
             child: LayoutBuilder(
               builder: (context, constraints) => GridView.builder(
-                padding: const EdgeInsets.all(
-                  AppDimensions.learningGridPadding,
-                ),
+                padding: const EdgeInsets.all(AppDimensions.learningGridPadding),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: AppDimensions.responsiveColumnCount(
                     availableWidth: constraints.maxWidth,
@@ -77,13 +74,17 @@ class _AlphabetScreenState extends State<AlphabetScreen> {
   Widget _buildBanner() {
     final l = _selected!;
     final palette = AccessibilityScope.of(context).palette;
+
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         gradient: palette.alphabetGradient,
-        border: Border.all(color: palette.border, width: palette.borderWidth),
+        border: Border.all(
+          color: palette.border,
+          width: palette.borderWidth,
+        ),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
@@ -106,7 +107,9 @@ class _AlphabetScreenState extends State<AlphabetScreen> {
               ),
             ),
           ),
+
           const SizedBox(width: 14),
+
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -119,7 +122,9 @@ class _AlphabetScreenState extends State<AlphabetScreen> {
                     color: palette.onCard,
                   ),
                 ),
+
                 const SizedBox(height: 4),
+
                 Text(
                   l.funFact,
                   style: TextStyle(
@@ -132,7 +137,11 @@ class _AlphabetScreenState extends State<AlphabetScreen> {
               ],
             ),
           ),
-          Text(l.emoji, style: const TextStyle(fontSize: 36)),
+
+          Text(
+            l.emoji,
+            style: const TextStyle(fontSize: 36),
+          ),
         ],
       ),
     );
