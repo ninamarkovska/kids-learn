@@ -3,7 +3,6 @@ import '../data/plants_data.dart';
 import '../models/plant_model.dart';
 import '../widgets/plant_card.dart';
 import '../../../core/widgets/page_scaffold.dart';
-import '../../../core/services/tts_service.dart';
 import '../../../core/services/audio_service.dart';
 import '../../../core/services/vibration_service.dart';
 import '../../../core/constants/dimensions.dart';
@@ -12,6 +11,7 @@ import '../../../core/accessibility/accessibility_settings.dart';
 
 class PlantsScreen extends StatefulWidget {
   const PlantsScreen({super.key});
+
   @override
   State<PlantsScreen> createState() => _PlantsScreenState();
 }
@@ -19,11 +19,14 @@ class PlantsScreen extends StatefulWidget {
 class _PlantsScreenState extends State<PlantsScreen> {
   String _selectedCategory = 'сите';
   PlantModel? _selected;
-  final _tts = TtsService();
+
   final _audio = AudioService();
   final _vib = VibrationService();
 
-  final _categories = ['сите', 'цвет', 'овошје', 'зеленчук', 'дрво', 'посебно'];
+  bool _isBannerExpanded = false;
+  bool _isMuted = false;
+
+  final _categories = ['сите', 'овошје', 'зеленчук'];
 
   List<PlantModel> get _filtered {
     if (_selectedCategory == 'сите') return PlantsData.plants;
@@ -32,25 +35,61 @@ class _PlantsScreenState extends State<PlantsScreen> {
         .toList();
   }
 
-  void _onTap(PlantModel plant) async {
-    setState(() => _selected = plant);
+  Future<void> _onTap(PlantModel plant) async {
+    setState(() {
+      _selected = plant;
+      _isBannerExpanded = false;
+    });
+
     _vib.success();
-    await _audio.playAsset(plant.audioPath);
-    await _tts.speak(plant.name);
-    await Future.delayed(const Duration(milliseconds: 600));
-    await _tts.speak(plant.funFact);
+    if (!_isMuted) {
+      await _audio.playAsset(plant.audioPath);
+    }
+  }
+
+
+
+  Future<void> _toggleMute() async {
+    setState(() => _isMuted = !_isMuted);
+
+    if (_isMuted) {
+      await _audio.stop();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final palette = AccessibilityScope.of(context).palette;
+
     return PageScaffold(
-      title: '🌿 Растенија',
+      titleWidget: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Image.asset(
+            'assets/images/plants/fruitsvegetables.png',
+            height: 34,
+            fit: BoxFit.contain,
+          ),
+          const SizedBox(width: 10),
+          const Text(
+            'Овошје и Зеленчук',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.w800,
+              color: Colors.white,
+            ),
+          ),
+        ],
+      ),
       gradientColors: palette.plantsGradient.colors,
       child: Column(
         children: [
           _buildFilter(),
+
+          // Banner е фиксен
           if (_selected != null) _buildBanner(),
+
+          // Само ова се скрола
           Expanded(child: _buildGrid()),
         ],
       ),
@@ -59,6 +98,7 @@ class _PlantsScreenState extends State<PlantsScreen> {
 
   Widget _buildFilter() {
     final palette = AccessibilityScope.of(context).palette;
+
     return Container(
       height: 64,
       margin: const EdgeInsets.only(top: 16),
@@ -69,13 +109,17 @@ class _PlantsScreenState extends State<PlantsScreen> {
         itemBuilder: (_, i) {
           final cat = _categories[i];
           final active = cat == _selectedCategory;
+
           return Padding(
             padding: const EdgeInsets.only(right: 14),
             child: GestureDetector(
-              onTap: () => setState(() {
-                _selectedCategory = cat;
-                _selected = null;
-              }),
+              onTap: () {
+                setState(() {
+                  _selectedCategory = cat;
+                  _selected = null;
+                  _isBannerExpanded = false;
+                });
+              },
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
                 padding: const EdgeInsets.symmetric(
@@ -83,7 +127,9 @@ class _PlantsScreenState extends State<PlantsScreen> {
                   vertical: 14,
                 ),
                 decoration: BoxDecoration(
-                  color: active ? palette.selected : palette.controlBackground,
+                  color: active
+                      ? palette.selected
+                      : palette.controlBackground,
                   borderRadius: BorderRadius.circular(14),
                   border: Border.all(
                     color: active ? palette.selected : palette.border,
@@ -93,7 +139,7 @@ class _PlantsScreenState extends State<PlantsScreen> {
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: palette.primary.withValues(alpha: 0.15),
+                      color: palette.primary.withOpacity(0.12),
                       blurRadius: 6,
                     ),
                   ],
@@ -103,7 +149,9 @@ class _PlantsScreenState extends State<PlantsScreen> {
                   style: TextStyle(
                     fontSize: AppTypeScale.interactive,
                     fontWeight: FontWeight.w700,
-                    color: active ? palette.onCard : palette.textPrimary,
+                    color: active
+                        ? palette.onCard
+                        : palette.textPrimary,
                   ),
                 ),
               ),
@@ -118,61 +166,160 @@ class _PlantsScreenState extends State<PlantsScreen> {
     switch (cat) {
       case 'сите':
         return '🌍 Сите';
-      case 'цвет':
-        return '🌸 Цветови';
       case 'овошје':
         return '🍎 Овошје';
       case 'зеленчук':
         return '🥦 Зеленчук';
-      case 'дрво':
-        return '🌳 Дрвја';
-      case 'посебно':
-        return '🌵 Посебни';
       default:
         return cat;
     }
   }
 
   Widget _buildBanner() {
-    final p = _selected!;
+    final plant = _selected!;
     final palette = AccessibilityScope.of(context).palette;
+
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.fromLTRB(16, 6, 16, 10),
+      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
       decoration: BoxDecoration(
         gradient: palette.plantsGradient,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: palette.border, width: palette.borderWidth),
+        borderRadius: BorderRadius.circular(28),
+        border: Border.all(
+          color: palette.border,
+          width: palette.borderWidth,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: palette.primary.withOpacity(0.18),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
-      child: Row(
+      child: Column(
         children: [
-          Text(p.emoji, style: const TextStyle(fontSize: 40)),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  p.name,
-                  style: TextStyle(
-                    fontSize: AppTypeScale.itemTitle,
-                    fontWeight: FontWeight.w800,
-                    color: palette.onCard,
-                  ),
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 250),
+            width: _isBannerExpanded ? 80 : 64,
+            height: _isBannerExpanded ? 80 : 64,
+            padding: const EdgeInsets.only(left: 4),
+            child: Image.asset(
+              plant.imagePath,
+              fit: BoxFit.contain,
+              errorBuilder: (_, __, ___) => Text(
+                plant.emoji,
+                style: TextStyle(
+                  fontSize: _isBannerExpanded ? 70 : 50,
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  p.funFact,
-                  style: TextStyle(
-                    fontSize: AppTypeScale.secondary,
-                    color: palette.onCardSecondary,
-                  ),
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
+              ),
             ),
+          ),
+
+          const SizedBox(height: 6),
+
+          Text(
+            plant.name,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: _isBannerExpanded ? 28 : 24,
+              fontWeight: FontWeight.w900,
+              color: Colors.white,
+            ),
+          ),
+
+          const SizedBox(height: 4),
+
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: Text(
+              plant.funFact,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: _isBannerExpanded ? 17 : 15,
+                fontWeight: FontWeight.w600,
+                height: 1.4,
+                color: Colors.white.withOpacity(0.95),
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 12),
+
+          Row(
+            children: [
+              Expanded(
+                child: ElevatedButton.icon(
+                  onPressed: _isMuted ? null : () => _audio.playAsset(plant.audioPath),
+                  icon: const Icon(Icons.volume_up_rounded),
+                  label: const Text(
+                    'Слушни',
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: palette.primary,
+                    disabledBackgroundColor: Colors.white70,
+                    disabledForegroundColor: Colors.grey,
+                    elevation: 0,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                ),
+              ),
+
+              const SizedBox(width: 8),
+
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.18),
+                  shape: BoxShape.circle,
+                ),
+                child: IconButton(
+                  onPressed: _toggleMute,
+                  icon: Icon(
+                    _isMuted
+                        ? Icons.notifications_off_rounded
+                        : Icons.notifications_active_rounded,
+                    color: Colors.white,
+                    size: 22,
+                  ),
+                ),
+              ),
+
+              const SizedBox(width: 8),
+
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.18),
+                  shape: BoxShape.circle,
+                ),
+                child: IconButton(
+                  onPressed: () {
+                    setState(() {
+                      _isBannerExpanded = !_isBannerExpanded;
+                    });
+                  },
+                  icon: Icon(
+                    _isBannerExpanded
+                        ? Icons.zoom_out_rounded
+                        : Icons.zoom_in_rounded,
+                    color: Colors.white,
+                    size: 22,
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -180,25 +327,59 @@ class _PlantsScreenState extends State<PlantsScreen> {
   }
 
   Widget _buildGrid() {
-    return LayoutBuilder(
-      builder: (context, constraints) => GridView.builder(
-        padding: const EdgeInsets.all(AppDimensions.learningGridPadding),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: AppDimensions.responsiveColumnCount(
-            availableWidth: constraints.maxWidth,
-            minimumCardWidth: AppDimensions.learningCardMinWidth,
+    final palette = AccessibilityScope.of(context).palette;
+
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20, 4, 20, 10),
+          child: Row(
+            children: [
+              Icon(
+                Icons.grid_view_rounded,
+                color: palette.primary,
+                size: 22,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                'Избери овошје или зеленчук',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800,
+                  color: palette.textPrimary,
+                ),
+              ),
+            ],
           ),
-          crossAxisSpacing: AppDimensions.learningGridSpacing,
-          mainAxisSpacing: AppDimensions.learningGridSpacing,
-          childAspectRatio: 0.82,
         ),
-        itemCount: _filtered.length,
-        itemBuilder: (_, i) => PlantCard(
-          plant: _filtered[i],
-          index: i,
-          onTap: () => _onTap(_filtered[i]),
+
+        Expanded(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return GridView.builder(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: AppDimensions.responsiveColumnCount(
+                    availableWidth: constraints.maxWidth,
+                    minimumCardWidth: AppDimensions.learningCardMinWidth,
+                  ),
+                  crossAxisSpacing: AppDimensions.learningGridSpacing,
+                  mainAxisSpacing: AppDimensions.learningGridSpacing,
+                  childAspectRatio: 0.82,
+                ),
+                itemCount: _filtered.length,
+                itemBuilder: (_, index) {
+                  return PlantCard(
+                    plant: _filtered[index],
+                    index: index,
+                    onTap: () => _onTap(_filtered[index]),
+                  );
+                },
+              );
+            },
+          ),
         ),
-      ),
+      ],
     );
   }
 }

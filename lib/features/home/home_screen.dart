@@ -255,9 +255,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ),
           const SizedBox(height: 16),
           _buildMenuCard(
-            title: 'Растенија',
+            title: 'Овошје и зеленчук',
             subtitle: 'Запознај ги!',
-            emoji: '🌿',
+            emoji: '🍓',
             gradient: palette.cardGradients[3],
             palette: palette,
             onTap: () => _navigate(const PlantsScreen()),

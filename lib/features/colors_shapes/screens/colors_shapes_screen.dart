@@ -25,16 +25,19 @@ class _ColorsShapesScreenState extends State<ColorsShapesScreen> {
 
   ColorShapeModel? _selected;
 
+  // ✅ Недостасуваше
+  bool _isBannerExpanded = false;
+
+  // ✅ Mute / Unmute
+  bool _isMuted = false;
+
   List<ColorShapeModel> get _items =>
       _tab == 'colors'
           ? ColorsShapesData.colors
           : ColorsShapesData.shapes;
 
-  Future<void> _onTap(ColorShapeModel item) async {
-    setState(() => _selected = item);
-    _vib.success();
-
-    if (item.audioPath.isEmpty) return;
+  Future<void> _playAudio(ColorShapeModel item) async {
+    if (_isMuted || item.audioPath.isEmpty) return;
 
     try {
       final asset = item.audioPath.replaceFirst('assets/', '');
@@ -47,6 +50,19 @@ class _ColorsShapesScreenState extends State<ColorsShapesScreen> {
     } catch (e) {
       debugPrint('AUDIO ERROR: $e');
     }
+  }
+
+  Future<void> _onTap(ColorShapeModel item) async {
+    setState(() => _selected = item);
+    _vib.success();
+
+    await _playAudio(item);
+  }
+
+  Future<void> _toggleMute() async {
+    setState(() => _isMuted = !_isMuted);
+
+    await _audioPlayer.setVolume(_isMuted ? 0 : 1);
   }
 
   @override
@@ -65,7 +81,9 @@ class _ColorsShapesScreenState extends State<ColorsShapesScreen> {
       child: Column(
         children: [
           _buildTabs(),
+
           if (_selected != null) _buildSelectedBanner(),
+
           Expanded(child: _buildGrid()),
         ],
       ),
@@ -111,6 +129,7 @@ class _ColorsShapesScreenState extends State<ColorsShapesScreen> {
           setState(() {
             _tab = key;
             _selected = null;
+            _isBannerExpanded = false;
           });
         },
         child: AnimatedContainer(
@@ -145,55 +164,162 @@ class _ColorsShapesScreenState extends State<ColorsShapesScreen> {
     final palette = AccessibilityScope.of(context).palette;
 
     return AnimatedContainer(
-      duration: const Duration(milliseconds: 300),
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      duration: const Duration(milliseconds: 250),
+      margin: const EdgeInsets.fromLTRB(16, 4, 16, 10),
+      padding: EdgeInsets.symmetric(
+        horizontal: _isBannerExpanded ? 20 : 16,
+        vertical: _isBannerExpanded ? 18 : 12,
+      ),
       decoration: BoxDecoration(
         color: palette.selectedBackground,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: palette.selected,
           width: palette.borderWidth + 1,
         ),
       ),
-      child: Row(
+      child: Column(
         children: [
-          if (item.type == ItemType.color)
-            Container(
-              width: 36,
-              height: 36,
-              decoration: BoxDecoration(
-                color: item.displayColor,
-                shape: BoxShape.circle,
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (item.type == ItemType.color)
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  width: _isBannerExpanded ? 64 : 48,
+                  height: _isBannerExpanded ? 64 : 48,
+                  decoration: BoxDecoration(
+                    color: item.displayColor,
+                    shape: BoxShape.circle,
+                  ),
+                )
+              else if (item.id == 'triangle' ||
+                  item.id == 'rectangle' ||
+                  item.id == 'pentagon' ||
+                  item.id == 'hexagon')
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  width: _isBannerExpanded ? 64 : 48,
+                  height: _isBannerExpanded ? 64 : 48,
+                  child: Image.asset(
+                    item.imagePath,
+                    fit: BoxFit.contain,
+                  ),
+                )
+              else
+                AnimatedDefaultTextStyle(
+                  duration: const Duration(milliseconds: 200),
+                  style: TextStyle(
+                    fontSize: _isBannerExpanded ? 54 : 40,
+                  ),
+                  child: Text(item.emoji),
+                ),
+
+              const SizedBox(width: 14),
+
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    AnimatedDefaultTextStyle(
+                      duration: const Duration(milliseconds: 200),
+                      style: TextStyle(
+                        fontSize: _isBannerExpanded ? 28 : 22,
+                        fontWeight: FontWeight.w800,
+                        color: palette.textPrimary,
+                      ),
+                      child: Text(item.name),
+                    ),
+                    const SizedBox(height: 4),
+                    AnimatedDefaultTextStyle(
+                      duration: const Duration(milliseconds: 200),
+                      style: TextStyle(
+                        fontSize: _isBannerExpanded ? 18 : 15,
+                        color: palette.textSecondary,
+                        height: 1.35,
+                      ),
+                      child: Text(item.description),
+                    ),
+                  ],
+                ),
               ),
-            )
-          else
-            Text(item.emoji, style: const TextStyle(fontSize: 32)),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  item.name,
-                  style: TextStyle(
-                    fontSize: AppTypeScale.itemTitle,
-                    fontWeight: FontWeight.w800,
-                    color: palette.textPrimary,
+
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: palette.selected.withOpacity(0.12),
+                  shape: BoxShape.circle,
+                ),
+                child: IconButton(
+                  onPressed: () {
+                    setState(() {
+                      _isBannerExpanded = !_isBannerExpanded;
+                    });
+                  },
+                  icon: Icon(
+                    _isBannerExpanded
+                        ? Icons.zoom_out_rounded
+                        : Icons.zoom_in_rounded,
+                    color: palette.selected,
+                    size: 24,
                   ),
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  item.description,
-                  style: TextStyle(
-                    fontSize: AppTypeScale.secondary,
-                    color: palette.textSecondary,
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
-          Icon(Icons.volume_up_rounded, color: palette.selected),
+
+          const SizedBox(height: 16),
+
+          // ✅ Големи копчиња
+          Row(
+            children: [
+              if (item.audioPath.isNotEmpty)
+                Expanded(
+                  flex: 2,
+                  child: ElevatedButton.icon(
+                    onPressed: () => _playAudio(item),
+                    icon: const Icon(Icons.volume_up_rounded, size: 28),
+                    label: const Text(
+                      'Слушни повторно',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size.fromHeight(56),
+                      backgroundColor: palette.selected,
+                      foregroundColor: palette.onCard,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                    ),
+                  ),
+                ),
+
+              if (item.audioPath.isNotEmpty) const SizedBox(width: 10),
+
+              Container(
+                width: 56,
+                height: 56,
+                decoration: BoxDecoration(
+                  color: _isMuted ? Colors.red.shade400 : Colors.grey.shade600,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: IconButton(
+                  onPressed: _toggleMute,
+                  icon: Icon(
+                    _isMuted
+                        ? Icons.notifications_off_rounded
+                        : Icons.notifications_active_rounded,
+                    color: Colors.white,
+                    size: 28,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );
@@ -203,7 +329,12 @@ class _ColorsShapesScreenState extends State<ColorsShapesScreen> {
     return LayoutBuilder(
       builder: (context, constraints) {
         return GridView.builder(
-          padding: const EdgeInsets.all(AppDimensions.learningGridPadding),
+          padding: const EdgeInsets.fromLTRB(
+            AppDimensions.learningGridPadding,
+            0,
+            AppDimensions.learningGridPadding,
+            AppDimensions.learningGridPadding,
+          ),
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: AppDimensions.responsiveColumnCount(
               availableWidth: constraints.maxWidth,

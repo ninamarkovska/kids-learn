@@ -57,7 +57,11 @@ flutter:
   assets:
     - assets/images/
     - assets/images/animals/
+    - assets/images/plants/
     - assets/audio/colors/
     - assets/audio/animals/
     - assets/images/alphabet/
     - assets/audio/letters/
+    - assets/images/shapes/
+    - assets/audio/shapes/
+    - assets/audio/plants/

@@ -29,6 +29,42 @@ class _AnimalDetailScreenState extends State<AnimalDetailScreen>
   late AnimationController _bounceController;
   late Animation<double> _bounceAnim;
 
+  bool get _hasSoundFile {
+    const animalsWithSound = {
+      'cat',
+      'horse',
+      'dog',
+      'lion',
+      'tiger',
+      'elephant',
+      'eagle',
+      'parrot',
+      'owl',
+      'whale',
+      'dolphin',
+      'goat',
+      'pig',
+      'sheep',
+      'giraffe',
+      'hippo',
+      'rabbit',
+      'seal',
+      'zebra',
+      'frog',
+      'monkey',
+      'donkey',
+      'cow',
+      'ostrich',
+    };
+
+    return animalsWithSound.contains(widget.animal.id);
+  }
+
+  /// Пат до *_sound.mp3
+  String get _soundAudioPath {
+    return 'audio/animals/${widget.animal.id}_sound.mp3';
+  }
+
   @override
   void initState() {
     super.initState();
@@ -48,9 +84,12 @@ class _AnimalDetailScreenState extends State<AnimalDetailScreen>
       ),
     );
 
-    // Автоматски пушти MP3 кога ќе се отвори страницата
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _speakAnimal();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      try {
+        await _audio.playAsset(widget.animal.audioPath);
+      } catch (e) {
+        debugPrint("AUDIO ERROR: $e");
+      }
     });
   }
 
@@ -60,8 +99,9 @@ class _AnimalDetailScreenState extends State<AnimalDetailScreen>
     super.dispose();
   }
 
+  /// Се пушта само кога ќе се кликне "Слушни"
   Future<void> _speakAnimal() async {
-    if (_isSpeaking) return;
+    if (_isSpeaking || !_hasSoundFile) return;
 
     setState(() => _isSpeaking = true);
 
@@ -69,9 +109,9 @@ class _AnimalDetailScreenState extends State<AnimalDetailScreen>
     _bounceController.repeat(reverse: true);
 
     try {
-      await _audio.playAsset(widget.animal.audioPath);
+      await _audio.playAsset(_soundAudioPath);
     } catch (e) {
-      debugPrint("AUDIO ERROR: $e");
+      debugPrint("SOUND AUDIO ERROR: $e");
     }
 
     if (mounted) {
@@ -96,7 +136,10 @@ class _AnimalDetailScreenState extends State<AnimalDetailScreen>
               _buildInfoCard(),
               _buildFunFact(),
               const SizedBox(height: 24),
-              _buildSpeakButton(),
+
+              // Големото копче за звукот на животното (мекање, лаење...)
+              if (_hasSoundFile) _buildSpeakButton(),
+
               const SizedBox(height: 32),
             ],
           ),
@@ -157,37 +200,72 @@ class _AnimalDetailScreenState extends State<AnimalDetailScreen>
 
     return Container(
       margin: const EdgeInsets.all(24),
-      width: double.infinity,
-      height: 240,
-      decoration: BoxDecoration(
-        color: palette.tintedSurface(palette.animalsGradient.colors.first),
-        borderRadius: BorderRadius.circular(28),
-        border: Border.all(
-          color: palette.border,
-          width: palette.borderWidth,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: palette.primary.withValues(alpha: 0.15),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
-      child: Center(
-        child: ScaleTransition(
-          scale: _bounceAnim,
-          child: Image.asset(
-            widget.animal.imagePath,
-            width: 180,
-            height: 180,
-            fit: BoxFit.contain,
-            errorBuilder: (_, __, ___) => Text(
-              widget.animal.emoji,
-              style: const TextStyle(fontSize: 140),
+      child: Column(
+        children: [
+          Container(
+            width: double.infinity,
+            height: 240,
+            decoration: BoxDecoration(
+              color: palette.tintedSurface(
+                palette.animalsGradient.colors.first,
+              ),
+              borderRadius: BorderRadius.circular(28),
+              border: Border.all(
+                color: palette.border,
+                width: palette.borderWidth,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: palette.primary.withValues(alpha: 0.15),
+                  blurRadius: 20,
+                  offset: const Offset(0, 8),
+                ),
+              ],
+            ),
+            child: Center(
+              child: ScaleTransition(
+                scale: _bounceAnim,
+                child: Image.asset(
+                  widget.animal.imagePath,
+                  width: 180,
+                  height: 180,
+                  fit: BoxFit.contain,
+                  errorBuilder: (_, __, ___) => Text(
+                    widget.animal.emoji,
+                    style: const TextStyle(fontSize: 140),
+                  ),
+                ),
+              ),
             ),
           ),
-        ),
+
+          const SizedBox(height: 14),
+
+          // 🔊 Мало копче под сликата
+          ElevatedButton.icon(
+            onPressed: () => _audio.playAsset(widget.animal.audioPath),
+            icon: const Icon(Icons.volume_up_rounded, size: 20),
+            label: const Text(
+              'Слушни повторно',
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: palette.animalsGradient.colors.first,
+              foregroundColor: Colors.white,
+              elevation: 2,
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20,
+                vertical: 10,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -215,10 +293,17 @@ class _AnimalDetailScreenState extends State<AnimalDetailScreen>
       ),
       child: Column(
         children: [
-          _buildInfoRow('🔊', 'Звук', widget.animal.sound),
-          const Divider(height: 20),
+          if (widget.animal.sound.trim().isNotEmpty) ...[
+            _buildInfoRow('🔊', 'Звук', widget.animal.sound),
+
+            const SizedBox(height: 10),
+
+            const Divider(height: 20),
+          ],
+
           _buildInfoRow('🏡', 'Живеалиште', widget.animal.habitat),
           const Divider(height: 20),
+
           _buildInfoRow(
             '📂',
             'Категорија',

@@ -3,7 +3,8 @@ import '../accessibility/accessibility_settings.dart';
 import '../constants/typography.dart';
 
 class PageScaffold extends StatelessWidget {
-  final String title;
+  final String? title;
+  final Widget? titleWidget;
   final Widget child;
   final List<Color>? gradientColors;
   final Widget? floatingActionButton;
@@ -11,7 +12,8 @@ class PageScaffold extends StatelessWidget {
 
   const PageScaffold({
     super.key,
-    required this.title,
+    this.title,
+    this.titleWidget,
     required this.child,
     this.gradientColors,
     this.floatingActionButton,
@@ -22,6 +24,7 @@ class PageScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = AccessibilityScope.of(context).palette;
     final headerColors = gradientColors ?? [palette.primary, palette.accent];
+
     return Scaffold(
       backgroundColor: palette.backgroundGradient.colors.first,
       body: SafeArea(
@@ -69,22 +72,29 @@ class PageScaffold extends StatelessWidget {
                     )
                   else
                     const SizedBox(width: 44),
+
                   Expanded(
-                    child: Text(
-                      title,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: AppTypeScale.screenTitle,
-                        fontWeight: FontWeight.w800,
-                        color: palette.onCard,
-                        letterSpacing: 0.5,
-                      ),
+                    child: Center(
+                      child:
+                      titleWidget ??
+                          Text(
+                            title ?? '',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: AppTypeScale.screenTitle,
+                              fontWeight: FontWeight.w800,
+                              color: palette.onCard,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
                     ),
                   ),
+
                   const SizedBox(width: 44),
                 ],
               ),
             ),
+
             // Content
             Expanded(child: child),
           ],

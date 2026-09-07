@@ -24,7 +24,7 @@ class AlphabetData {
 
     LetterModel(letter: 'Ѓ', letterLower: 'ѓ', emoji: '🥨', word: 'Ѓеврек',
         audioPath: 'audio/letters/gj.mp3', imagePath: 'assets/images/alphabet/gj.png',
-        funFact: 'Ѓ е за Ѓеврек – вкусно пециво во форма на круг!'),
+        funFact: 'Ѓ е за Ѓеврек – вкусно пециво!'),
 
     LetterModel(letter: 'Е', letterLower: 'е', emoji: '🌲', word: 'Елка',
         audioPath: 'audio/letters/e.mp3', imagePath: 'assets/images/alphabet/e.png',
@@ -40,7 +40,7 @@ class AlphabetData {
 
     LetterModel(letter: 'Ѕ', letterLower: 'ѕ', emoji: '🔔', word: 'Ѕвонче',
         audioPath: 'audio/letters/dz.mp3', imagePath: 'assets/images/alphabet/dz.png',
-        funFact: 'Ѕ е за Ѕвонче – ѕвони „дзин-дзин“!'),
+        funFact: 'Ѕ е за Ѕвонче“!'),
 
     LetterModel(letter: 'И', letterLower: 'и', emoji: '🧸', word: 'Играчка',
         audioPath: 'audio/letters/i.mp3', imagePath: 'assets/images/alphabet/i.png',
@@ -104,7 +104,7 @@ class AlphabetData {
 
     LetterModel(letter: 'Ф', letterLower: 'ф', emoji: '⚽', word: 'Фудбал',
         audioPath: 'audio/letters/f.mp3', imagePath: 'assets/images/alphabet/f.png',
-        funFact: 'Ф е за Фудбал – се игра со топка!'),
+        funFact: 'Ф е за Фудбал!'),
 
     LetterModel(letter: 'Х', letterLower: 'х', emoji: '📄', word: 'Хартија',
         audioPath: 'audio/letters/h.mp3', imagePath: 'assets/images/alphabet/h.png',

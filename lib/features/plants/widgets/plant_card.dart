@@ -29,14 +29,18 @@ class _PlantCardState extends State<PlantCard>
   @override
   void initState() {
     super.initState();
+
     _ctrl = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 120),
     );
+
     _scale = Tween<double>(
       begin: 1.0,
-      end: 0.92,
-    ).animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut));
+      end: 0.98, // многу суптилна анимација
+    ).animate(
+      CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut),
+    );
   }
 
   @override
@@ -45,7 +49,7 @@ class _PlantCardState extends State<PlantCard>
     super.dispose();
   }
 
-  void _tap() async {
+  Future<void> _tap() async {
     await _ctrl.forward();
     await _ctrl.reverse();
     _vib.lightTap();
@@ -57,15 +61,16 @@ class _PlantCardState extends State<PlantCard>
     final palette = AccessibilityScope.of(context).palette;
     final color = palette.itemAccent(widget.index);
     final light = palette.tintedSurface(color);
+
     return GestureDetector(
       onTap: _tap,
       child: ScaleTransition(
         scale: _scale,
         child: Container(
-          padding: const EdgeInsets.all(AppDimensions.cardPadding),
+          padding: const EdgeInsets.all(18),
           decoration: BoxDecoration(
             color: light,
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(22),
             border: Border.all(
               color: palette.border,
               width: palette.borderWidth,
@@ -82,15 +87,15 @@ class _PlantCardState extends State<PlantCard>
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                width: 70,
-                height: 70,
+                width: 88,
+                height: 88,
                 decoration: BoxDecoration(
                   color: palette.controlBackground,
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: color.withValues(alpha: 0.2),
-                      blurRadius: 8,
+                      color: color.withValues(alpha: 0.18),
+                      blurRadius: 10,
                       offset: const Offset(0, 3),
                     ),
                   ],
@@ -98,39 +103,43 @@ class _PlantCardState extends State<PlantCard>
                 child: Center(
                   child: Image.asset(
                     widget.plant.imagePath,
-                    width: 45,
-                    height: 45,
+                    width: 58,
+                    height: 58,
                     fit: BoxFit.contain,
                     errorBuilder: (_, __, ___) => Text(
                       widget.plant.emoji,
-                      style: const TextStyle(fontSize: 40),
+                      style: const TextStyle(fontSize: 50),
                     ),
                   ),
                 ),
               ),
-              const SizedBox(height: 10),
+
+              const SizedBox(height: 12),
+
               Text(
                 widget.plant.name,
-                style: TextStyle(
-                  fontSize: AppDimensions.cardTitleFont,
-                  fontWeight: FontWeight.w800,
-                  color: palette.textPrimary,
-                ),
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w800,
+                  color: palette.textPrimary,
+                ),
               ),
-              const SizedBox(height: 4),
+
+              const SizedBox(height: 6),
+
               Text(
                 widget.plant.category,
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: palette.textSecondary,
-                ),
                 textAlign: TextAlign.center,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w600,
+                  color: palette.textSecondary,
+                ),
               ),
             ],
           ),

@@ -132,10 +132,11 @@ class ColorsShapesData {
       emoji: '⭕',
       displayColor: Color(0xFF1E90FF),
       type: ItemType.shape,
-      audioPath: '',
+      audioPath: 'assets/audio/shapes/circle.mp3',
       description: 'Тркалезна форма без агли',
       funFact: 'Тркалото е круг - без него нема коли!',
     ),
+
     ColorShapeModel(
       id: 'square',
       name: 'Квадрат',
@@ -143,10 +144,11 @@ class ColorsShapesData {
       emoji: '🟥',
       displayColor: Color(0xFFFF4757),
       type: ItemType.shape,
-      audioPath: '',
+      audioPath: 'assets/audio/shapes/square.mp3',
       description: '4 еднакви страни и 4 агли',
       funFact: 'Скоро сите прозорци се квадрати!',
     ),
+
     ColorShapeModel(
       id: 'triangle',
       name: 'Триаголник',
@@ -154,10 +156,11 @@ class ColorsShapesData {
       emoji: '🔺',
       displayColor: Color(0xFFFF9F43),
       type: ItemType.shape,
-      audioPath: '',
+      audioPath: 'assets/audio/shapes/triangle.mp3',
       description: '3 страни и 3 агли',
       funFact: 'Пирамидите во Египет се триаголници!',
     ),
+
     ColorShapeModel(
       id: 'rectangle',
       name: 'Правоаголник',
@@ -165,10 +168,11 @@ class ColorsShapesData {
       emoji: '🟦',
       displayColor: Color(0xFF6C5CE7),
       type: ItemType.shape,
-      audioPath: '',
+      audioPath: 'assets/audio/shapes/rectangle.mp3',
       description: '4 страни, 2 долги и 2 кратки',
       funFact: 'Вратата на твојата соба е правоаголник!',
     ),
+
     ColorShapeModel(
       id: 'star',
       name: 'Ѕвезда',
@@ -176,21 +180,35 @@ class ColorsShapesData {
       emoji: '⭐',
       displayColor: Color(0xFFFFD700),
       type: ItemType.shape,
-      audioPath: '',
+      audioPath: 'assets/audio/shapes/star.mp3',
       description: '5 краци, симбол на светло',
       funFact: 'На небото има многу ѕвезди!',
     ),
+
     ColorShapeModel(
-      id: 'heart',
-      name: 'Срце',
-      imagePath: 'assets/images/shapes/heart.png',
-      emoji: '❤️',
-      displayColor: Color(0xFFFF4757),
+      id: 'pentagon',
+      name: 'Петтоаголник',
+      imagePath: 'assets/images/shapes/pentagon.png',
+      emoji: '⬟',
+      displayColor: Color(0xFFFF9F43),
       type: ItemType.shape,
-      audioPath: '',
-      description: 'Симбол на љубов',
-      funFact: 'Срцето чука секој ден!',
+      audioPath: 'assets/audio/shapes/pentagon.mp3',
+      description: 'Форма со 5 страни',
+      funFact: 'Петтоаголникот има пет страни и пет агли.',
     ),
+
+    ColorShapeModel(
+      id: 'hexagon',
+      name: 'Шестоаголник',
+      imagePath: 'assets/images/shapes/hexagon.png',
+      emoji: '⬢',
+      displayColor: Color(0xFF6C5CE7),
+      type: ItemType.shape,
+      audioPath: 'assets/audio/shapes/hexagon.mp3',
+      description: 'Форма со 6 страни',
+      funFact: 'Пчелните саќиња се составени од шестоаголници.',
+    ),
+
     ColorShapeModel(
       id: 'diamond',
       name: 'Ромб',
@@ -198,20 +216,9 @@ class ColorsShapesData {
       emoji: '🔷',
       displayColor: Color(0xFF74B9FF),
       type: ItemType.shape,
-      audioPath: '',
+      audioPath: 'assets/audio/shapes/diamond.mp3',
       description: '4 еднакви страни, ротиран квадрат',
       funFact: 'Ромбот личи на навален квадрат.',
-    ),
-    ColorShapeModel(
-      id: 'oval',
-      name: 'Овал',
-      imagePath: 'assets/images/shapes/oval.png',
-      emoji: '🥚',
-      displayColor: Color(0xFF00B894),
-      type: ItemType.shape,
-      audioPath: '',
-      description: 'Издолжен круг',
-      funFact: 'Јајцето има овална форма.',
     ),
   ];
 

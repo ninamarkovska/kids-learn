@@ -29,14 +29,18 @@ class _AnimalCardState extends State<AnimalCard>
   @override
   void initState() {
     super.initState();
+
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 120),
     );
+
     _scaleAnim = Tween<double>(
       begin: 1.0,
-      end: 0.92,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+      end: 0.98, // многу суптилно
+    ).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
   }
 
   @override
@@ -45,7 +49,7 @@ class _AnimalCardState extends State<AnimalCard>
     super.dispose();
   }
 
-  void _handleTap() async {
+  Future<void> _handleTap() async {
     await _controller.forward();
     await _controller.reverse();
     _vibration.lightTap();
@@ -63,10 +67,10 @@ class _AnimalCardState extends State<AnimalCard>
       child: ScaleTransition(
         scale: _scaleAnim,
         child: Container(
-          padding: const EdgeInsets.all(AppDimensions.cardPadding),
+          padding: const EdgeInsets.all(18), // малку поголем padding
           decoration: BoxDecoration(
             color: lightColor,
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(22),
             border: Border.all(
               color: palette.border,
               width: palette.borderWidth,
@@ -82,17 +86,17 @@ class _AnimalCardState extends State<AnimalCard>
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Emoji / Слика
+              // Слика на животното
               Container(
-                width: 70,
-                height: 70,
+                width: 88,
+                height: 88,
                 decoration: BoxDecoration(
                   color: palette.controlBackground,
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: cardColor.withValues(alpha: 0.2),
-                      blurRadius: 8,
+                      color: cardColor.withValues(alpha: 0.18),
+                      blurRadius: 10,
                       offset: const Offset(0, 3),
                     ),
                   ],
@@ -100,39 +104,43 @@ class _AnimalCardState extends State<AnimalCard>
                 child: Center(
                   child: Image.asset(
                     widget.animal.imagePath,
-                    width: 45,
-                    height: 45,
+                    width: 58,
+                    height: 58,
                     fit: BoxFit.contain,
                     errorBuilder: (_, __, ___) => Text(
                       widget.animal.emoji,
-                      style: const TextStyle(fontSize: 40),
+                      style: const TextStyle(fontSize: 50),
                     ),
                   ),
                 ),
               ),
-              const SizedBox(height: 6),
+
+              const SizedBox(height: 12),
+
               // Име
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 4),
                 child: Text(
                   widget.animal.name,
-                  style: TextStyle(
-                    fontSize: AppDimensions.cardTitleFont,
-                    fontWeight: FontWeight.w800,
-                    color: palette.textPrimary,
-                  ),
                   textAlign: TextAlign.center,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w800,
+                    color: palette.textPrimary,
+                  ),
                 ),
               ),
-              const SizedBox(height: 4),
+
+              const SizedBox(height: 6),
+
               // Звук
               Text(
                 widget.animal.sound,
                 style: TextStyle(
-                  fontSize: AppDimensions.cardSubtitleFont,
-                  fontWeight: FontWeight.w500,
+                  fontSize: 17,
+                  fontWeight: FontWeight.w600,
                   color: palette.textSecondary,
                 ),
               ),

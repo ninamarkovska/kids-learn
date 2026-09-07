@@ -39,7 +39,7 @@ class _ColorShapeCardState extends State<ColorShapeCard>
 
     _scale = Tween<double>(
       begin: 1.0,
-      end: 0.94,
+      end: 0.995, // многу суптилно притискање
     ).animate(
       CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut),
     );
@@ -75,19 +75,18 @@ class _ColorShapeCardState extends State<ColorShapeCard>
             color: widget.selected ? palette.selectedBackground : light,
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color:
-              widget.selected ? palette.selected : palette.border,
+              color: widget.selected ? palette.selected : palette.border,
               width: widget.selected
-                  ? palette.borderWidth + 2
+                  ? palette.borderWidth + 1
                   : palette.borderWidth,
             ),
             boxShadow: [
               BoxShadow(
                 color: palette.border.withValues(
-                  alpha: widget.selected ? 0.20 : 0.12,
+                  alpha: widget.selected ? 0.18 : 0.10,
                 ),
-                blurRadius: widget.selected ? 14 : 8,
-                offset: const Offset(0, 4),
+                blurRadius: widget.selected ? 10 : 6,
+                offset: const Offset(0, 3),
               ),
             ],
           ),
@@ -95,43 +94,63 @@ class _ColorShapeCardState extends State<ColorShapeCard>
             children: [
               Center(
                 child: AnimatedScale(
-                  scale: widget.selected ? 1.05 : 1.0,
+                  scale: widget.selected ? 1.01 : 1.0,
                   duration: const Duration(milliseconds: 220),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      // BOI
                       if (widget.item.type == ItemType.color)
                         AnimatedContainer(
-                          duration:
-                          const Duration(milliseconds: 220),
-                          width: widget.selected ? 60 : 56,
-                          height: widget.selected ? 60 : 56,
+                          duration: const Duration(milliseconds: 220),
+                          width: widget.selected ? 82 : 74,
+                          height: widget.selected ? 82 : 74,
                           decoration: BoxDecoration(
                             color: widget.item.displayColor,
                             shape: BoxShape.circle,
-                            border: Border.all(
-                              color: Colors.white,
-                              width: widget.selected ? 3 : 2,
-                            ),
+                            // ❌ Нема бел border
                             boxShadow: [
                               BoxShadow(
                                 color: palette.border.withValues(alpha: 0.18),
-                                blurRadius: 8,
-                                offset: const Offset(0, 3),
+                                blurRadius: 10,
+                                offset: const Offset(0, 4),
                               ),
                             ],
                           ),
                         )
+
+                      // FORMI СО PNG СЛИКИ
+                      else if (widget.item.id == 'triangle' ||
+                          widget.item.id == 'rectangle' ||
+                          widget.item.id == 'pentagon' ||
+                          widget.item.id == 'hexagon')
+                        SizedBox(
+                          width: widget.selected ? 72 : 68,
+                          height: widget.selected ? 72 : 68,
+                          child: Image.asset(
+                            widget.item.imagePath,
+                            fit: BoxFit.contain,
+                            errorBuilder: (_, __, ___) => Text(
+                              widget.item.emoji,
+                              style: TextStyle(
+                                fontSize: widget.selected ? 54 : 50,
+                              ),
+                            ),
+                          ),
+                        )
+
+                      // ОСТАНАТИ ФОРМИ
                       else
                         AnimatedDefaultTextStyle(
-                          duration:
-                          const Duration(milliseconds: 220),
+                          duration: const Duration(milliseconds: 220),
                           style: TextStyle(
                             fontSize: widget.selected ? 54 : 50,
                           ),
                           child: Text(widget.item.emoji),
                         ),
-                      const SizedBox(height: 10),
+
+                      const SizedBox(height: 12),
+
                       Text(
                         widget.item.name,
                         textAlign: TextAlign.center,
@@ -148,7 +167,7 @@ class _ColorShapeCardState extends State<ColorShapeCard>
                 ),
               ),
 
-              // ✔️ Accessibility indicator
+              // ✔️ Ознака кога е селектирано
               if (widget.selected)
                 Positioned(
                   top: 0,
