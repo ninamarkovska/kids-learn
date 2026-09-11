@@ -19,14 +19,31 @@ class AlphabetScreen extends StatefulWidget {
 class _AlphabetScreenState extends State<AlphabetScreen> {
   final _vib = VibrationService();
   final _audio = AudioService();
+
   LetterModel? _selected;
 
-  void _onTap(LetterModel letter) async {
-    setState(() => _selected = letter);
+  bool _isBannerExpanded = false;
+  bool _isMuted = false;
+
+  Future<void> _onTap(LetterModel letter) async {
+    setState(() {
+      _selected = letter;
+      _isBannerExpanded = false;
+    });
+
     _vib.success();
 
-    // Се пушта само твоето снимено аудио.
-    await _audio.playAsset(letter.audioPath);
+    if (!_isMuted) {
+      await _audio.playAsset(letter.audioPath);
+    }
+  }
+
+  Future<void> _toggleMute() async {
+    setState(() => _isMuted = !_isMuted);
+
+    if (_isMuted) {
+      await _audio.stop();
+    }
   }
 
   @override
@@ -39,7 +56,6 @@ class _AlphabetScreenState extends State<AlphabetScreen> {
       child: Column(
         children: [
           if (_selected != null) _buildBanner(),
-
           Expanded(
             child: LayoutBuilder(
               builder: (context, constraints) => GridView.builder(
@@ -56,11 +72,11 @@ class _AlphabetScreenState extends State<AlphabetScreen> {
                 ),
                 itemCount: AlphabetData.letters.length,
                 itemBuilder: (_, i) {
-                  final l = AlphabetData.letters[i];
+                  final letter = AlphabetData.letters[i];
                   return LetterCard(
-                    letter: l,
+                    letter: letter,
                     index: i,
-                    onTap: () => _onTap(l),
+                    onTap: () => _onTap(letter),
                   );
                 },
               ),
@@ -72,75 +88,156 @@ class _AlphabetScreenState extends State<AlphabetScreen> {
   }
 
   Widget _buildBanner() {
-    final l = _selected!;
+    final letter = _selected!;
     final palette = AccessibilityScope.of(context).palette;
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
-      margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+      padding: EdgeInsets.symmetric(
+        horizontal: _isBannerExpanded ? 20 : 16,
+        vertical: _isBannerExpanded ? 20 : 16,
+      ),
       decoration: BoxDecoration(
         gradient: palette.alphabetGradient,
         border: Border.all(
           color: palette.border,
           width: palette.borderWidth,
         ),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(22),
       ),
-      child: Row(
+      child: Column(
         children: [
-          Container(
-            width: 64,
-            height: 64,
-            decoration: BoxDecoration(
-              color: palette.onCard.withValues(alpha: 0.25),
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Center(
-              child: Text(
-                l.letter,
-                style: TextStyle(
-                  fontSize: 36,
-                  fontWeight: FontWeight.w900,
-                  color: palette.onCard,
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 250),
+                width: _isBannerExpanded ? 84 : 68,
+                height: _isBannerExpanded ? 84 : 68,
+                decoration: BoxDecoration(
+                  color: palette.onCard.withOpacity(0.22),
+                  borderRadius: BorderRadius.circular(18),
+                ),
+                child: Center(
+                  child: Text(
+                    letter.letter,
+                    style: TextStyle(
+                      fontSize: _isBannerExpanded ? 50 : 38,
+                      fontWeight: FontWeight.w900,
+                      color: palette.onCard,
+                    ),
+                  ),
                 ),
               ),
-            ),
+
+              const SizedBox(width: 14),
+
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    AnimatedDefaultTextStyle(
+                      duration: const Duration(milliseconds: 250),
+                      style: TextStyle(
+                        fontSize: _isBannerExpanded ? 24 : 20,
+                        fontWeight: FontWeight.w800,
+                        color: palette.onCard,
+                      ),
+                      child: Text(
+                        'Буква ${letter.letter} — за ${letter.word}',
+                      ),
+                    ),
+
+                    const SizedBox(height: 6),
+
+                    AnimatedDefaultTextStyle(
+                      duration: const Duration(milliseconds: 250),
+                      style: TextStyle(
+                        fontSize: _isBannerExpanded ? 18 : 15,
+                        color: palette.onCardSecondary,
+                        height: 1.4,
+                      ),
+                      child: Text(letter.funFact),
+                    ),
+                  ],
+                ),
+              ),
+
+              Column(
+                children: [
+                  AnimatedDefaultTextStyle(
+                    duration: const Duration(milliseconds: 250),
+                    style: TextStyle(
+                      fontSize: _isBannerExpanded ? 46 : 36,
+                    ),
+                    child: Text(letter.emoji),
+                  ),
+
+                  const SizedBox(height: 8),
+
+                ],
+              ),
+            ],
           ),
 
-          const SizedBox(width: 14),
+          const SizedBox(height: 16),
 
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Буква ${l.letter} - за ${l.word}',
-                  style: TextStyle(
-                    fontSize: AppTypeScale.itemTitle,
-                    fontWeight: FontWeight.w800,
-                    color: palette.onCard,
+          Row(
+            children: [
+              Expanded(
+                child: ElevatedButton.icon(
+                  onPressed: _isMuted
+                      ? null
+                      : () => _audio.playAsset(letter.audioPath),
+                  icon: const Icon(Icons.volume_up_rounded),
+                  label: const Text(
+                    'Слушни повторно',
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: palette.primary,
+                    disabledBackgroundColor: Colors.white70,
+                    disabledForegroundColor: Colors.grey,
+                    elevation: 0,
+                    padding: const EdgeInsets.symmetric(vertical: 13),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
                   ),
                 ),
+              ),
 
-                const SizedBox(height: 4),
+              const SizedBox(width: 10),
 
-                Text(
-                  l.funFact,
-                  style: TextStyle(
-                    fontSize: AppTypeScale.secondary,
-                    color: palette.onCardSecondary,
-                  ),
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
+              Container(
+                width: 46,
+                height: 46,
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.18),
+                  shape: BoxShape.circle,
                 ),
-              ],
-            ),
-          ),
-
-          Text(
-            l.emoji,
-            style: const TextStyle(fontSize: 36),
+                child: IconButton(
+                  padding: EdgeInsets.zero,
+                  onPressed: () {
+                    setState(() {
+                      _isBannerExpanded = !_isBannerExpanded;
+                    });
+                  },
+                  icon: Icon(
+                    _isBannerExpanded
+                        ? Icons.zoom_out_rounded
+                        : Icons.zoom_in_rounded,
+                    color: Colors.white,
+                    size: 22,
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),

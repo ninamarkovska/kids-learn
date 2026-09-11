@@ -250,7 +250,7 @@ class AnimalsData {
       sound: 'Блуп-блуп!',
       habitat: 'Море / Езеро',
       funFact: 'Рибите дишат со жабри.',
-      category: 'море',
+      category: 'вода',
     ),
     AnimalModel(
       id: 'dolphin',
@@ -261,7 +261,7 @@ class AnimalsData {
       sound: 'Иии-иии!',
       habitat: 'Море',
       funFact: 'Делфините се многу паметни животни.',
-      category: 'море',
+      category: 'вода',
     ),
     AnimalModel(
       id: 'whale',
@@ -272,7 +272,7 @@ class AnimalsData {
       sound: 'Уууу!',
       habitat: 'Океан',
       funFact: 'Китот е најголемото морско животно на светот.',
-      category: 'море',
+      category: 'вода',
     ),
     AnimalModel(
       id: 'shark',
@@ -283,7 +283,7 @@ class AnimalsData {
       sound: '',
       habitat: 'Океан',
       funFact: 'Ајкулите имаат многу остри заби.',
-      category: 'море',
+      category: 'вода',
     ),
     AnimalModel(
       id: 'seal',
@@ -294,7 +294,7 @@ class AnimalsData {
       sound: '',
       habitat: 'Море',
       funFact: 'Фоките се одлични пливачи.',
-      category: 'море',
+      category: 'вода',
     ),
     AnimalModel(
       id: 'octopus',
@@ -305,7 +305,7 @@ class AnimalsData {
       sound: '',
       habitat: 'Море',
       funFact: 'Октоподот има осум краци.',
-      category: 'море',
+      category: 'вода',
     ),
     AnimalModel(
       id: 'frog',
@@ -316,7 +316,7 @@ class AnimalsData {
       sound: 'Кра-кра!',
       habitat: 'Езеро',
       funFact: 'Жабата може да скока многу далеку.',
-      category: 'море',
+      category: 'вода',
     ),
   ];
 

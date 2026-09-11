@@ -271,26 +271,27 @@ class _ColorsShapesScreenState extends State<ColorsShapesScreen> {
 
           const SizedBox(height: 16),
 
-          // ✅ Големи копчиња
           Row(
             children: [
               if (item.audioPath.isNotEmpty)
                 Expanded(
-                  flex: 2,
                   child: ElevatedButton.icon(
-                    onPressed: () => _playAudio(item),
-                    icon: const Icon(Icons.volume_up_rounded, size: 28),
+                    onPressed: _isMuted ? null : () => _playAudio(item),
+                    icon: const Icon(Icons.volume_up_rounded),
                     label: const Text(
                       'Слушни повторно',
                       style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                        fontSize: 17,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                     style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: palette.selected,
+                      disabledBackgroundColor: Colors.white70,
+                      disabledForegroundColor: Colors.grey,
+                      elevation: 0,
                       minimumSize: const Size.fromHeight(56),
-                      backgroundColor: palette.selected,
-                      foregroundColor: palette.onCard,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
                       ),
@@ -301,20 +302,21 @@ class _ColorsShapesScreenState extends State<ColorsShapesScreen> {
               if (item.audioPath.isNotEmpty) const SizedBox(width: 10),
 
               Container(
-                width: 56,
-                height: 56,
+                width: 46,
+                height: 46,
                 decoration: BoxDecoration(
-                  color: _isMuted ? Colors.red.shade400 : Colors.grey.shade600,
-                  borderRadius: BorderRadius.circular(16),
+                  color: palette.selected.withOpacity(0.12),
+                  shape: BoxShape.circle,
                 ),
                 child: IconButton(
+                  padding: EdgeInsets.zero,
                   onPressed: _toggleMute,
                   icon: Icon(
                     _isMuted
                         ? Icons.notifications_off_rounded
                         : Icons.notifications_active_rounded,
-                    color: Colors.white,
-                    size: 28,
+                    color: palette.selected,
+                    size: 22,
                   ),
                 ),
               ),

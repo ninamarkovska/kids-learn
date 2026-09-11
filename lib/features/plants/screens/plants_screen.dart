@@ -62,34 +62,35 @@ class _PlantsScreenState extends State<PlantsScreen> {
     final palette = AccessibilityScope.of(context).palette;
 
     return PageScaffold(
-      titleWidget: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Image.asset(
-            'assets/images/plants/fruitsvegetables.png',
-            height: 34,
-            fit: BoxFit.contain,
-          ),
-          const SizedBox(width: 10),
-          const Text(
-            'Овошје и Зеленчук',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.w800,
-              color: Colors.white,
+      titleWidget: Padding(
+        padding: const EdgeInsets.only(left: 12),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset(
+              'assets/images/plants/fruitsvegetables.png',
+              height: 34,
+              fit: BoxFit.contain,
             ),
-          ),
-        ],
+            const SizedBox(width: 10),
+            const Text(
+              'Овошје и Зеленчук',
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.w800,
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
       ),
       gradientColors: palette.plantsGradient.colors,
       child: Column(
         children: [
           _buildFilter(),
 
-          // Banner е фиксен
           if (_selected != null) _buildBanner(),
 
-          // Само ова се скрола
           Expanded(child: _buildGrid()),
         ],
       ),

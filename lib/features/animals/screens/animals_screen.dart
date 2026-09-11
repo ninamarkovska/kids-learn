@@ -18,7 +18,7 @@ class AnimalsScreen extends StatefulWidget {
 class _AnimalsScreenState extends State<AnimalsScreen> {
   String _selectedCategory = 'сите';
 
-  final _categories = ['сите', 'домашно', 'дивјо', 'птица', 'море'];
+  final _categories = ['сите', 'домашно', 'дивјо', 'птица', 'вода'];
 
   List<AnimalModel> get _filteredAnimals {
     if (_selectedCategory == 'сите') return AnimalsData.animals;
@@ -125,7 +125,7 @@ class _AnimalsScreenState extends State<AnimalsScreen> {
         return '🌿';
       case 'птица':
         return '🐦';
-      case 'море':
+      case 'вода':
         return '🌊';
       default:
         return '🐾';
@@ -142,8 +142,8 @@ class _AnimalsScreenState extends State<AnimalsScreen> {
         return 'Дивји';
       case 'птица':
         return 'Птици';
-      case 'море':
-        return 'Море';
+      case 'вода':
+        return 'Вода';
       default:
         return cat;
     }

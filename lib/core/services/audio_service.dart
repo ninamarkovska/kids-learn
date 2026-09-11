@@ -32,6 +32,25 @@ class AudioService {
       debugPrint('AudioService stop error: $e');
     }
   }
+  Future<void> playCorrect() async {
+    try {
+      await stop();
+      _isPlaying = true;
+      await _player.play(AssetSource("audio/correct.mp3"));
+    } catch (e) {
+      debugPrint("Correct sound error: $e");
+    }
+  }
+
+  Future<void> playWrong() async {
+    try {
+      await stop();
+      _isPlaying = true;
+      await _player.play(AssetSource("audio/wrong.mp3"));
+    } catch (e) {
+      debugPrint("Wrong sound error: $e");
+    }
+  }
 
   Future<void> setVolume(double volume) async {
     await _player.setVolume(volume.clamp(0.0, 1.0));
