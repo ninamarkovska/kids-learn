@@ -40,7 +40,7 @@ class AlphabetData {
 
     LetterModel(letter: 'Ѕ', letterLower: 'ѕ', emoji: '🔔', word: 'Ѕвонче',
         audioPath: 'audio/letters/dz.mp3', imagePath: 'assets/images/alphabet/dz.png',
-        funFact: 'Ѕ е за Ѕвонче“!'),
+        funFact: 'Ѕ е за Ѕвонче!'),
 
     LetterModel(letter: 'И', letterLower: 'и', emoji: '🧸', word: 'Играчка',
         audioPath: 'audio/letters/i.mp3', imagePath: 'assets/images/alphabet/i.png',

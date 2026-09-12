@@ -97,7 +97,51 @@ class _QuizScreenState extends State<QuizScreen>
     _shakeController.dispose();
     super.dispose();
   }
+  String? _getQuestionImage(QuestionModel question) {
+    // Нема слика кај звучните прашања
+    if (question.type == QuestionType.animalSound) {
+      return null;
+    }
 
+    // Животни
+    if (question.category == QuizCategory.animals &&
+        question.type == QuestionType.animalEmoji) {
+      final id = question.id.replaceFirst("emoji_", "");
+      return "assets/images/animals/$id.png";
+    }
+
+    // Овошје и зеленчук
+    if (question.category == QuizCategory.fruitsVegetables) {
+      final id = question.id
+          .replaceFirst("_fruit", "")
+          .replaceFirst("_vegetable", "");
+
+      return "assets/images/plants/$id.png";
+    }
+
+    // Форми
+    if (question.category == QuizCategory.colorsShapes &&
+        question.type == QuestionType.shapeObject) {
+      switch (question.id) {
+        case "shape_triangle":
+          return "assets/images/shapes/triangle.png";
+
+        case "shape_rectangle":
+          return "assets/images/shapes/rectangle.png";
+
+        case "shape_pentagon":
+          return "assets/images/shapes/pentagon.png";
+
+        case "shape_hexagon":
+          return "assets/images/shapes/hexagon.png";
+
+        default:
+          return null;
+      }
+    }
+
+    return null;
+  }
   void _startQuiz(QuizCategory category) {
     setState(() {
       _selectedCategory = category;
@@ -488,6 +532,7 @@ class _QuizScreenState extends State<QuizScreen>
           animal.id == "shark" ||
           animal.id == "octopus" ||
           animal.id == "fish" ||
+          animal.id == "crocodile" ||
           animal.id == "snake") {
         continue;
       }
@@ -534,7 +579,7 @@ class _QuizScreenState extends State<QuizScreen>
     questions.addAll([
       QuestionModel(
         id: "rabbit_food",
-        question: "🐰 Што сака да јаде зајачето?",
+        question: "Што сака да јаде зајачето?",
         correctAnswer: "Морков",
         emoji: "🐰",
         options: ["Морков", "Риба", "Леб", "Јаболко"]..shuffle(_random),
@@ -543,7 +588,7 @@ class _QuizScreenState extends State<QuizScreen>
       ),
       QuestionModel(
         id: "cow_food",
-        question: "🐄 Што јаде кравата?",
+        question: "Што јаде кравата?",
         correctAnswer: "Трева",
         emoji: "🐄",
         options: ["Трева", "Риба", "Банана", "Мед"]..shuffle(_random),
@@ -552,7 +597,7 @@ class _QuizScreenState extends State<QuizScreen>
       ),
       QuestionModel(
         id: "lion_food",
-        question: "🦁 Кое животно сака месо?",
+        question: "Кое животно сака месо?",
         correctAnswer: "Лав",
         emoji: "🦁",
         options: ["Лав", "Зајак", "Крава", "Коњ"]..shuffle(_random),
@@ -561,7 +606,7 @@ class _QuizScreenState extends State<QuizScreen>
       ),
       QuestionModel(
         id: "duck_home",
-        question: "🦆 Каде живее патката?",
+        question: "Каде живее патката?",
         correctAnswer: "Во вода",
         emoji: "🦆",
         options: [
@@ -576,7 +621,7 @@ class _QuizScreenState extends State<QuizScreen>
       ),
       QuestionModel(
         id: "fish_home",
-        question: "🐟 Каде живее рибата?",
+        question: "Каде живее рибата?",
         correctAnswer: "Во вода",
         emoji: "🐟",
         options: [
@@ -596,70 +641,79 @@ class _QuizScreenState extends State<QuizScreen>
     questions.addAll([
       QuestionModel(
         id: "banana",
-        question: "🍌 Каква боја е бананата?",
+        question: "Каква боја е бананата?",
         correctAnswer: "Жолта",
+        emoji: "🍌",
         options: ["Жолта", "Зелена", "Црвена", "Сина"]..shuffle(_random),
         category: QuizCategory.colorsShapes,
         type: QuestionType.colorObject,
       ),
+
       QuestionModel(
         id: "apple",
-        question: "🍎 Каква боја е јаболкото?",
+        question: "Каква боја е јаболкото?",
         correctAnswer: "Црвена",
+        emoji: "🍎",
         options: ["Сина", "Црвена", "Жолта", "Розова"]..shuffle(_random),
         category: QuizCategory.colorsShapes,
         type: QuestionType.colorObject,
       ),
+
       QuestionModel(
         id: "grass",
-        question: "🌿 Каква боја е тревата?",
+        question: "Каква боја е тревата?",
         correctAnswer: "Зелена",
+        emoji: "🌿",
         options: ["Зелена", "Жолта", "Плава", "Бела"]..shuffle(_random),
         category: QuizCategory.colorsShapes,
         type: QuestionType.colorObject,
       ),
+
       QuestionModel(
         id: "sky",
-        question: "☁️ Каква боја е небото?",
+        question: "Каква боја е небото?",
         correctAnswer: "Сина",
+        emoji: "☁️",
         options: ["Портокалова", "Сина", "Розова", "Зелена"]..shuffle(_random),
         category: QuizCategory.colorsShapes,
         type: QuestionType.colorObject,
       ),
+
       QuestionModel(
         id: "carrot",
-        question: "🥕 Каква боја е морковот?",
+        question: "Каква боја е морковот?",
         correctAnswer: "Портокалова",
-        options: [
-          "Портокалова",
-          "Зелена",
-          "Црвена",
-          "Жолта"
-        ]
-          ..shuffle(_random),
+        emoji: "🥕",
+        options: ["Портокалова", "Зелена", "Црвена", "Жолта"]..shuffle(_random),
         category: QuizCategory.colorsShapes,
         type: QuestionType.colorObject,
       ),
+
       QuestionModel(
         id: "sun",
-        question: "☀️ Каква боја е сонцето?",
+        question: "Каква боја е сонцето?",
         correctAnswer: "Жолта",
+        emoji: "☀️",
         options: ["Жолта", "Црвена", "Бела", "Сина"]..shuffle(_random),
         category: QuizCategory.colorsShapes,
         type: QuestionType.colorObject,
       ),
+
       QuestionModel(
         id: "snow",
-        question: "❄️ Каква боја е снегот?",
+        question: "Каква боја е снегот?",
         correctAnswer: "Бела",
+        emoji: "❄️",
         options: ["Бела", "Сина", "Розова", "Црна"]..shuffle(_random),
         category: QuizCategory.colorsShapes,
         type: QuestionType.colorObject,
       ),
+
       QuestionModel(
         id: "strawberry",
-        question: "🍓 Каква боја е јагодата?",
+        question: "Каква боја е јагодата?",
         correctAnswer: "Црвена",
+        emoji: "🍓",
         options: ["Црвена", "Виолетова", "Жолта", "Зелена"]..shuffle(_random),
         category: QuizCategory.colorsShapes,
         type: QuestionType.colorObject,
@@ -670,58 +724,127 @@ class _QuizScreenState extends State<QuizScreen>
 
     questions.addAll([
       QuestionModel(
-        id: "ball",
-        question: "⚽ На која форма личи топката?",
+        id: "shape_circle",
+        question: "Која форма е ова?",
         correctAnswer: "Круг",
+        emoji: "⭕",
+        options: ["Круг", "Квадрат", "Триаголник", "Правоаголник"]..shuffle(_random),
+        category: QuizCategory.colorsShapes,
+        type: QuestionType.shapeObject,
+      ),
+
+      QuestionModel(
+        id: "shape_square",
+        question: "Која форма е ова?",
+        correctAnswer: "Квадрат",
+        emoji: "🟦",
+        options: ["Квадрат", "Круг", "Петаголник", "Шестоаголник"]..shuffle(_random),
+        category: QuizCategory.colorsShapes,
+        type: QuestionType.shapeObject,
+      ),
+
+      QuestionModel(
+        id: "shape_triangle",
+        question: "Која форма е ова?",
+        correctAnswer: "Триаголник",
+        options: ["Триаголник", "Круг", "Квадрат", "Правоаголник"]..shuffle(_random),
+        category: QuizCategory.colorsShapes,
+        type: QuestionType.shapeObject,
+      ),
+
+      QuestionModel(
+        id: "shape_rectangle",
+        question: "Која форма е ова?",
+        correctAnswer: "Правоаголник",
+        options: ["Правоаголник", "Квадрат", "Триаголник", "Круг"]..shuffle(_random),
+        category: QuizCategory.colorsShapes,
+        type: QuestionType.shapeObject,
+      ),
+
+      QuestionModel(
+        id: "shape_pentagon",
+        question: "Која форма е ова?",
+        correctAnswer: "Петаголник",
+        options: ["Петаголник", "Шестоаголник", "Квадрат", "Круг"]..shuffle(_random),
+        category: QuizCategory.colorsShapes,
+        type: QuestionType.shapeObject,
+      ),
+
+      QuestionModel(
+        id: "shape_hexagon",
+        question: "Која форма е ова?",
+        correctAnswer: "Шестоаголник",
+        options: ["Шестоаголник", "Петаголник", "Триаголник", "Квадрат"]..shuffle(_random),
+        category: QuizCategory.colorsShapes,
+        type: QuestionType.shapeObject,
+      ),
+
+      QuestionModel(
+        id: "ball",
+        question: "На која форма личи топката?",
+        correctAnswer: "Круг",
+        emoji: "⚽",
         options: ["Круг", "Квадрат", "Триаголник", "Правоаголник"]
           ..shuffle(_random),
         category: QuizCategory.colorsShapes,
         type: QuestionType.shapeObject,
       ),
+
       QuestionModel(
         id: "pizza",
-        question: "🍕 На која форма личи парче пица?",
+        question: "На која форма личи парче пица?",
         correctAnswer: "Триаголник",
+        emoji: "🍕",
         options: ["Круг", "Срце", "Триаголник", "Квадрат"]
           ..shuffle(_random),
         category: QuizCategory.colorsShapes,
         type: QuestionType.shapeObject,
       ),
+
       QuestionModel(
         id: "window",
-        question: "🪟 На која форма личи прозорец?",
+        question: "На која форма личи прозорецот?",
         correctAnswer: "Квадрат",
-        options: ["Квадрат", "Круг", "Ѕвезда", "Срце"]..shuffle(_random),
-        category: QuizCategory.colorsShapes,
-        type: QuestionType.shapeObject,
-      ),
-      QuestionModel(
-        id: "book",
-        question: "📚 На која форма личи книгата?",
-        correctAnswer: "Правоаголник",
-        options: [
-          "Правоаголник",
-          "Круг",
-          "Триаголник",
-          "Срце"
-        ]
+        emoji: "🪟",
+        options: ["Квадрат", "Круг", "Ѕвезда", "Срце"]
           ..shuffle(_random),
         category: QuizCategory.colorsShapes,
         type: QuestionType.shapeObject,
       ),
+
       QuestionModel(
-        id: "heart",
-        question: "❤️ Каква форма е ова?",
-        correctAnswer: "Срце",
-        options: ["Круг", "Срце", "Ѕвезда", "Квадрат"]..shuffle(_random),
+        id: "book",
+        question: "На која форма личи книгата?",
+        correctAnswer: "Правоаголник",
+        emoji: "📚",
+        options: [
+          "Правоаголник",
+          "Круг",
+          "Триаголник",
+          "Срце",
+        ]..shuffle(_random),
         category: QuizCategory.colorsShapes,
         type: QuestionType.shapeObject,
       ),
+
+      QuestionModel(
+        id: "heart",
+        question: "Каква форма е ова?",
+        correctAnswer: "Срце",
+        emoji: "❤️",
+        options: ["Круг", "Срце", "Ѕвезда", "Квадрат"]
+          ..shuffle(_random),
+        category: QuizCategory.colorsShapes,
+        type: QuestionType.shapeObject,
+      ),
+
       QuestionModel(
         id: "star",
-        question: "⭐ Каква форма е ова?",
+        question: "Каква форма е ова?",
         correctAnswer: "Ѕвезда",
-        options: ["Ѕвезда", "Срце", "Круг", "Квадрат"]..shuffle(_random),
+        emoji: "⭐",
+        options: ["Ѕвезда", "Срце", "Круг", "Квадрат"]
+          ..shuffle(_random),
         category: QuizCategory.colorsShapes,
         type: QuestionType.shapeObject,
       ),
@@ -802,7 +925,7 @@ class _QuizScreenState extends State<QuizScreen>
     questions.addAll([
       QuestionModel(
         id: "apple_fruit",
-        question: "🍎 Што е ова?",
+        question: "Што е ова?",
         correctAnswer: "Јаболко",
         emoji: "🍎",
         options: ["Јаболко", "Круша", "Домат", "Портокал"]..shuffle(_random),
@@ -812,7 +935,7 @@ class _QuizScreenState extends State<QuizScreen>
 
       QuestionModel(
         id: "banana_fruit",
-        question: "🍌 Што е ова?",
+        question: "Што е ова?",
         correctAnswer: "Банана",
         emoji: "🍌",
         options: ["Банана", "Пченка", "Лимон", "Круша"]..shuffle(_random),
@@ -822,7 +945,7 @@ class _QuizScreenState extends State<QuizScreen>
 
       QuestionModel(
         id: "orange_fruit",
-        question: "🍊 Што е ова?",
+        question: "Што е ова?",
         correctAnswer: "Портокал",
         emoji: "🍊",
         options: ["Портокал", "Праска", "Јаболко", "Мандарина"]..shuffle(_random),
@@ -832,7 +955,7 @@ class _QuizScreenState extends State<QuizScreen>
 
       QuestionModel(
         id: "strawberry_fruit",
-        question: "🍓 Што е ова?",
+        question: "Што е ова?",
         correctAnswer: "Јагода",
         emoji: "🍓",
         options: ["Јагода", "Цреша", "Малина", "Домат"]..shuffle(_random),
@@ -842,7 +965,7 @@ class _QuizScreenState extends State<QuizScreen>
 
       QuestionModel(
         id: "carrot_vegetable",
-        question: "🥕 Што е ова?",
+        question: "Што е ова?",
         correctAnswer: "Морков",
         emoji: "🥕",
         options: ["Морков", "Банана", "Пченка", "Краставица"]..shuffle(_random),
@@ -851,28 +974,28 @@ class _QuizScreenState extends State<QuizScreen>
       ),
 
       QuestionModel(
-        id: "broccoli_vegetable",
-        question: "🥦 Што е ова?",
-        correctAnswer: "Брокула",
-        emoji: "🥦",
-        options: ["Брокула", "Карфиол", "Зелка", "Спанаќ"]..shuffle(_random),
+        id: "spinach_vegetable",
+        question: "Што е ова?",
+        correctAnswer: "Спанаќ",
+        emoji: "🥬",
+        options: ["Спанаќ", "Марула", "Зелка", "Брокула"]..shuffle(_random),
         category: QuizCategory.fruitsVegetables,
         type: QuestionType.vegetableEmoji,
       ),
 
       QuestionModel(
-        id: "tomato_vegetable",
-        question: "🍅 Што е ова?",
-        correctAnswer: "Домат",
-        emoji: "🍅",
-        options: ["Домат", "Јаболко", "Пиперка", "Праска"]..shuffle(_random),
+        id: "onion_vegetable",
+        question: "Што е ова?",
+        correctAnswer: "Кромид",
+        emoji: "🧅",
+        options: ["Кромид", "Лук", "Компир", "Зелка"]..shuffle(_random),
         category: QuizCategory.fruitsVegetables,
         type: QuestionType.vegetableEmoji,
       ),
 
       QuestionModel(
         id: "cucumber_vegetable",
-        question: "🥒 Што е ова?",
+        question: "Што е ова?",
         correctAnswer: "Краставица",
         emoji: "🥒",
         options: ["Краставица", "Тиквичка", "Морков", "Пченка"]..shuffle(_random),
@@ -911,7 +1034,58 @@ class _QuizScreenState extends State<QuizScreen>
         break;
 
       case QuizCategory.all:
-        filtered = questions;
+        final animalSounds = questions
+            .where((q) => q.type == QuestionType.animalSound)
+            .toList()
+          ..shuffle(_random);
+
+        final animalImages = questions
+            .where((q) => q.type == QuestionType.animalEmoji)
+            .toList()
+          ..shuffle(_random);
+
+        final animalFacts = questions
+            .where((q) => q.type == QuestionType.animalFact)
+            .toList()
+          ..shuffle(_random);
+
+        final colorQuestions = questions
+            .where((q) => q.type == QuestionType.colorObject)
+            .toList()
+          ..shuffle(_random);
+
+        final shapeQuestions = questions
+            .where((q) => q.type == QuestionType.shapeObject)
+            .toList()
+          ..shuffle(_random);
+
+        final alphabetQuestions = questions
+            .where((q) => q.category == QuizCategory.alphabet)
+            .toList()
+          ..shuffle(_random);
+
+        final fruitQuestions = questions
+            .where((q) => q.type == QuestionType.fruitEmoji)
+            .toList()
+          ..shuffle(_random);
+
+        final vegetableQuestions = questions
+            .where((q) => q.type == QuestionType.vegetableEmoji)
+            .toList()
+          ..shuffle(_random);
+
+        filtered = [
+          ...animalSounds.take(2),
+          ...animalImages.take(2),
+          ...animalFacts.take(2),
+          ...colorQuestions.take(2),
+          ...shapeQuestions.take(2),
+          ...alphabetQuestions.take(2),
+          ...fruitQuestions.take(2),
+          ...vegetableQuestions.take(1),
+        ];
+
+        filtered.shuffle(_random);
         break;
     }
 
@@ -1152,6 +1326,8 @@ class _QuizScreenState extends State<QuizScreen>
 // ================= QUESTION CARD =================
 
   Widget _buildQuestionCard(QuestionModel question) {
+    final imagePath = _getQuestionImage(question);
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(24),
@@ -1160,8 +1336,7 @@ class _QuizScreenState extends State<QuizScreen>
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color:
-            _palette.primary.withOpacity(.25),
+            color: _palette.primary.withOpacity(.25),
             blurRadius: 16,
             offset: const Offset(0, 8),
           ),
@@ -1169,7 +1344,16 @@ class _QuizScreenState extends State<QuizScreen>
       ),
       child: Column(
         children: [
-          if (question.emoji != null)
+          if (imagePath != null)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: Image.asset(
+                imagePath,
+                height: 130,
+                fit: BoxFit.contain,
+              ),
+            )
+          else if (question.emoji != null)
             Text(
               question.emoji!,
               style: const TextStyle(fontSize: 75),

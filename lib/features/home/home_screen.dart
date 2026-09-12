@@ -7,6 +7,7 @@ import '../colors_shapes/screens/colors_shapes_screen.dart';
 import '../alphabet/screens/alphabet_screen.dart';
 import '../plants/screens/plants_screen.dart';
 import '../quiz/screens/quiz_screen.dart';
+import 'package:flutter/services.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -57,32 +58,65 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final palette = AccessibilityScope.of(context).palette;
+
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(gradient: palette.backgroundGradient),
+        decoration: BoxDecoration(
+          gradient: palette.backgroundGradient,
+        ),
         child: SafeArea(
           child: LayoutBuilder(
             builder: (context, constraints) {
               final compact = constraints.maxHeight < 700;
               final width = constraints.maxWidth;
-              final titleFontSize = (width * 0.082).clamp(30.0, 34.0);
+              final titleFontSize =
+              (width * 0.082).clamp(30.0, 34.0);
 
               return Column(
                 children: [
-                  SizedBox(height: compact ? 12 : 20),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Image.asset(
+                          'assets/images/logo_finki.png',
+                          height: compact ? 32 : 36,
+                          fit: BoxFit.contain,
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  SizedBox(height: compact ? 8 : 12),
+
                   _buildTitle(
                     compact: compact,
                     titleFontSize: titleFontSize,
                     palette: palette,
                   ),
+
                   SizedBox(height: compact ? 8 : 12),
+
                   _buildAccessibilityButton(palette),
+
                   SizedBox(height: compact ? 8 : 12),
-                  Expanded(child: _buildTopicList(palette)),
+
+                  Expanded(
+                    child: _buildTopicList(palette),
+                  ),
+
                   SizedBox(height: compact ? 12 : 16),
-                  _buildQuizButton(compact: compact, palette: palette),
+
+                  _buildQuizButton(
+                    compact: compact,
+                    palette: palette,
+                  ),
+
                   SizedBox(height: compact ? 10 : 12),
+
                   _buildFooter(palette),
+
                   SizedBox(height: compact ? 12 : 16),
                 ],
               );

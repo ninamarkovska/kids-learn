@@ -4,7 +4,6 @@ import '../constants/colors.dart';
 class AppHelpers {
   AppHelpers._();
 
-  /// Враќа боја врз основа на индекс (за различни картички)
   static Color getCardColor(int index) {
     final colors = [
       AppColors.animalsColor,
@@ -19,25 +18,22 @@ class AppHelpers {
     return colors[index % colors.length];
   }
 
-  /// Враќа светла верзија на бојата
   static Color getLightColor(Color color) {
     return Color.lerp(color, Colors.white, 0.85) ?? color;
   }
 
-  /// Форматирај резултат за квиз
   static String formatScore(int correct, int total) {
     return '$correct / $total';
   }
 
-  /// Порака за резултат
+
   static String getScoreMessage(int correct, int total) {
     final percentage = (correct / total) * 100;
-    if (percentage >= 80) return '🌟 Одлично! Си шампион!';
+    if (percentage >= 80) return '🌟 Одлично! Ти си шампион!';
     if (percentage >= 50) return '👍 Добро! Продолжи со вежбање!';
     return '💪 Вежбај повеќе и пробај пак!';
   }
 
-  /// Emoji за резултат
   static String getScoreEmoji(int correct, int total) {
     final percentage = (correct / total) * 100;
     if (percentage >= 80) return '🏆';
@@ -45,7 +41,6 @@ class AppHelpers {
     return '📚';
   }
 
-  /// Провери дали слика постои (за fallback на emoji)
   static Widget buildImageWithFallback({
     required String imagePath,
     required String fallbackEmoji,
