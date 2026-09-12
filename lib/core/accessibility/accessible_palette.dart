@@ -102,8 +102,8 @@ class AccessiblePalettes {
 
       // 🎨 Бои и Форми
       _gradient(
-        const Color(0xFF74A9F8),
-        const Color(0xFF9FC8FF),
+        const Color(0xFF5EA8F5),
+        const Color(0xFF88C5FF),
       ),
 
       // 🔤 Азбука
