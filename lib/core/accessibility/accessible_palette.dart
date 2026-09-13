@@ -82,7 +82,7 @@ class AccessiblePalettes {
     ColorVisionMode.tritanopia => tritanopia,
   };
 
-  // ================= STANDARD =================
+  // STANDARD
 
   static final standard = AccessiblePalette(
     primary: const Color(0xFFFF6B35),
@@ -94,31 +94,26 @@ class AccessiblePalettes {
     ),
 
     cardGradients: [
-      // 🐾 Животни
       _gradient(
         const Color(0xFF7C5CFC),
         const Color(0xFFA27BFF),
       ),
 
-      // 🎨 Бои и Форми
       _gradient(
         const Color(0xFF5EA8F5),
         const Color(0xFF88C5FF),
       ),
 
-      // 🔤 Азбука
       _gradient(
         const Color(0xFF00A896),
         const Color(0xFF20C997),
       ),
 
-      // 🍎 Овошје и Зеленчук
       _gradient(
         const Color(0xFF43A047),
         const Color(0xFF81C784),
       ),
 
-      // 🧩 Сите категории
       _gradient(
         const Color(0xFFE056FD),
         const Color(0xFF686DE0),
@@ -150,7 +145,7 @@ class AccessiblePalettes {
     incorrectBackground: const Color(0xFFFFE0E3),
   );
 
-  // ================= HIGH CONTRAST =================
+  // HIGH CONTRAST
 
   static final highContrast = AccessiblePalette(
     primary: const Color(0xFF003B73),
@@ -211,7 +206,7 @@ class AccessiblePalettes {
     borderWidth: 3,
   );
 
-  // ================= PROTANOPIA =================
+  // PROTANOPIA
 
   static final protanopia = AccessiblePalette(
     primary: const Color(0xFF0067A5),
@@ -272,7 +267,7 @@ class AccessiblePalettes {
     borderWidth: 2,
   );
 
-  // ================= DEUTERANOPIA =================
+  // DEUTERANOPIA
 
   static final deuteranopia = AccessiblePalette(
     primary: const Color(0xFF155C8A),
@@ -333,7 +328,7 @@ class AccessiblePalettes {
     borderWidth: 2,
   );
 
-  // ================= TRITANOPIA =================
+  // TRITANOPIA
 
   static final tritanopia = AccessiblePalette(
     primary: const Color(0xFF9A3E25),

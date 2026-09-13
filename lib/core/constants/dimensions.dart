@@ -3,7 +3,6 @@ import 'typography.dart';
 class AppDimensions {
   AppDimensions._();
 
-  // Shared readable type sizes for child-focused content.
   static const double cardTitleFont = AppTypeScale.itemTitle;
   static const double cardSubtitleFont = AppTypeScale.secondary;
   static const double cardPadding = 12;

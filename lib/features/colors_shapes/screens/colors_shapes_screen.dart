@@ -25,10 +25,8 @@ class _ColorsShapesScreenState extends State<ColorsShapesScreen> {
 
   ColorShapeModel? _selected;
 
-  // ✅ Недостасуваше
   bool _isBannerExpanded = false;
 
-  // ✅ Mute / Unmute
   bool _isMuted = false;
 
   List<ColorShapeModel> get _items =>

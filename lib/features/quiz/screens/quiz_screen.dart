@@ -98,19 +98,16 @@ class _QuizScreenState extends State<QuizScreen>
     super.dispose();
   }
   String? _getQuestionImage(QuestionModel question) {
-    // Нема слика кај звучните прашања
     if (question.type == QuestionType.animalSound) {
       return null;
     }
 
-    // Животни
     if (question.category == QuizCategory.animals &&
         question.type == QuestionType.animalEmoji) {
       final id = question.id.replaceFirst("emoji_", "");
       return "assets/images/animals/$id.png";
     }
 
-    // Овошје и зеленчук
     if (question.category == QuizCategory.fruitsVegetables) {
       final id = question.id
           .replaceFirst("_fruit", "")
@@ -119,7 +116,6 @@ class _QuizScreenState extends State<QuizScreen>
       return "assets/images/plants/$id.png";
     }
 
-    // Форми
     if (question.category == QuizCategory.colorsShapes &&
         question.type == QuestionType.shapeObject) {
       switch (question.id) {
@@ -244,8 +240,6 @@ class _QuizScreenState extends State<QuizScreen>
     return _buildQuizScreen();
   }
 
-  // ================= CATEGORY SCREEN =================
-
   Widget _buildCategoryScreen() {
     return Scaffold(
       body: Container(
@@ -341,7 +335,7 @@ class _QuizScreenState extends State<QuizScreen>
                       _categoryCard(
                         emoji: "✨",
                         title: "Сите\nкатегории",
-                        gradient: _palette.cardGradients[4], // ✅ различна боја
+                        gradient: _palette.cardGradients[4],
                         category: QuizCategory.all,
                       ),
                     ],
@@ -517,13 +511,9 @@ class _QuizScreenState extends State<QuizScreen>
     );
   }
 
-  // ================= QUESTIONS =================
-
 
   List<QuestionModel> _buildQuestions(QuizCategory category) {
     final List<QuestionModel> questions = [];
-
-    // ================== ЖИВОТНИ ==================
 
     final animals = [...AnimalsData.animals]..shuffle(_random);
 
@@ -636,7 +626,6 @@ class _QuizScreenState extends State<QuizScreen>
       ),
     ]);
 
-    // ================== БОИ ==================
 
     questions.addAll([
       QuestionModel(
@@ -719,8 +708,6 @@ class _QuizScreenState extends State<QuizScreen>
         type: QuestionType.colorObject,
       ),
     ]);
-
-    // ================== ФОРМИ ==================
 
     questions.addAll([
       QuestionModel(
@@ -850,7 +837,6 @@ class _QuizScreenState extends State<QuizScreen>
       ),
     ]);
 
-    // ================== АЗБУКА ==================
 
     final letters = [...AlphabetData.letters]..shuffle(_random);
 
@@ -920,7 +906,7 @@ class _QuizScreenState extends State<QuizScreen>
         type: QuestionType.alphabetLetter,
       ),
     ]);
-    // ================== ОВОШЈЕ И ЗЕЛЕНЧУК ==================
+
 
     questions.addAll([
       QuestionModel(
@@ -1004,7 +990,6 @@ class _QuizScreenState extends State<QuizScreen>
       ),
     ]);
 
-    // ================== КАТЕГОРИИ ==================
 
     List<QuestionModel> filtered;
 
@@ -1097,7 +1082,6 @@ class _QuizScreenState extends State<QuizScreen>
     return filtered.take(15).toList();
   }
 
-  // ================= QUIZ SCREEN =================
 
   Widget _buildQuizScreen() {
     final question = _questions[_currentQuestion];
@@ -1192,7 +1176,6 @@ class _QuizScreenState extends State<QuizScreen>
     );
   }
 
-// ================= HEADER =================
 
   Widget _buildHeader() {
     String title = "Сите категории";
@@ -1273,7 +1256,6 @@ class _QuizScreenState extends State<QuizScreen>
     );
   }
 
-// ================= PROGRESS =================
 
   Widget _buildProgress() {
     final progress =
@@ -1322,8 +1304,6 @@ class _QuizScreenState extends State<QuizScreen>
       ),
     );
   }
-
-// ================= QUESTION CARD =================
 
   Widget _buildQuestionCard(QuestionModel question) {
     final imagePath = _getQuestionImage(question);
@@ -1374,8 +1354,6 @@ class _QuizScreenState extends State<QuizScreen>
       ),
     );
   }
-
-// ================= OPTIONS =================
 
   Widget _buildOptions(QuestionModel question) {
     return GridView.builder(
@@ -1451,8 +1429,6 @@ class _QuizScreenState extends State<QuizScreen>
       },
     );
   }
-
-// ================= FEEDBACK =================
 
   Widget _buildFeedback(QuestionModel question) {
     final correct = _selectedAnswer == question.correctAnswer;
@@ -1573,8 +1549,6 @@ class _QuizScreenState extends State<QuizScreen>
       ),
     );
   }
-
-  // ================= RESULT SCREEN =================
 
   Widget _buildResultScreen() {
     final total = _questions.length;

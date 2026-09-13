@@ -35,9 +35,7 @@ class _AnimalsScreenState extends State<AnimalsScreen> {
       gradientColors: palette.animalsGradient.colors,
       child: Column(
         children: [
-          // Категории
           _buildCategoryFilter(),
-          // Грид
           Expanded(child: _buildAnimalsGrid()),
         ],
       ),

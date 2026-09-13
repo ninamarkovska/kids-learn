@@ -60,7 +60,6 @@ class _AnimalDetailScreenState extends State<AnimalDetailScreen>
     return animalsWithSound.contains(widget.animal.id);
   }
 
-  /// Пат до *_sound.mp3
   String get _soundAudioPath {
     return 'audio/animals/${widget.animal.id}_sound.mp3';
   }
@@ -99,7 +98,6 @@ class _AnimalDetailScreenState extends State<AnimalDetailScreen>
     super.dispose();
   }
 
-  /// Се пушта само кога ќе се кликне "Слушни"
   Future<void> _speakAnimal() async {
     if (_isSpeaking || !_hasSoundFile) return;
 
@@ -137,7 +135,6 @@ class _AnimalDetailScreenState extends State<AnimalDetailScreen>
               _buildFunFact(),
               const SizedBox(height: 24),
 
-              // Големото копче за звукот на животното (мекање, лаење...)
               if (_hasSoundFile) _buildSpeakButton(),
 
               const SizedBox(height: 32),
@@ -241,7 +238,6 @@ class _AnimalDetailScreenState extends State<AnimalDetailScreen>
 
           const SizedBox(height: 14),
 
-          // 🔊 Мало копче под сликата
           ElevatedButton.icon(
             onPressed: () => _audio.playAsset(widget.animal.audioPath),
             icon: const Icon(Icons.volume_up_rounded, size: 20),

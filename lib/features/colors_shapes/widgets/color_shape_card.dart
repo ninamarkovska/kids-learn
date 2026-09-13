@@ -39,7 +39,7 @@ class _ColorShapeCardState extends State<ColorShapeCard>
 
     _scale = Tween<double>(
       begin: 1.0,
-      end: 0.995, // многу суптилно притискање
+      end: 0.995,
     ).animate(
       CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut),
     );
@@ -99,7 +99,6 @@ class _ColorShapeCardState extends State<ColorShapeCard>
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // BOI
                       if (widget.item.type == ItemType.color)
                         AnimatedContainer(
                           duration: const Duration(milliseconds: 220),
@@ -108,7 +107,6 @@ class _ColorShapeCardState extends State<ColorShapeCard>
                           decoration: BoxDecoration(
                             color: widget.item.displayColor,
                             shape: BoxShape.circle,
-                            // ❌ Нема бел border
                             boxShadow: [
                               BoxShadow(
                                 color: palette.border.withValues(alpha: 0.18),
@@ -119,7 +117,6 @@ class _ColorShapeCardState extends State<ColorShapeCard>
                           ),
                         )
 
-                      // FORMI СО PNG СЛИКИ
                       else if (widget.item.id == 'triangle' ||
                           widget.item.id == 'rectangle' ||
                           widget.item.id == 'pentagon' ||
@@ -139,7 +136,6 @@ class _ColorShapeCardState extends State<ColorShapeCard>
                           ),
                         )
 
-                      // ОСТАНАТИ ФОРМИ
                       else
                         AnimatedDefaultTextStyle(
                           duration: const Duration(milliseconds: 220),
@@ -167,7 +163,6 @@ class _ColorShapeCardState extends State<ColorShapeCard>
                 ),
               ),
 
-              // ✔️ Ознака кога е селектирано
               if (widget.selected)
                 Positioned(
                   top: 0,

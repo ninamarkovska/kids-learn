@@ -3,7 +3,6 @@ import '../models/plant_model.dart';
 class PlantsData {
   static const List<PlantModel> plants = [
 
-    // 🍎 ОВОШЈЕ
 
     PlantModel(
       id: 'apple',
@@ -147,8 +146,6 @@ class PlantsData {
       habitat: 'Градина',
       funFact: 'Вишната е покисела од црешата и често се користи за сокови и колачи.',
     ),
-
-// 🥕 ЗЕЛЕНЧУК
 
     PlantModel(
       id: 'carrot',

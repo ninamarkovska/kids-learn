@@ -37,7 +37,7 @@ class _AnimalCardState extends State<AnimalCard>
 
     _scaleAnim = Tween<double>(
       begin: 1.0,
-      end: 0.98, // многу суптилно
+      end: 0.98,
     ).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
     );
@@ -67,7 +67,7 @@ class _AnimalCardState extends State<AnimalCard>
       child: ScaleTransition(
         scale: _scaleAnim,
         child: Container(
-          padding: const EdgeInsets.all(18), // малку поголем padding
+          padding: const EdgeInsets.all(18),
           decoration: BoxDecoration(
             color: lightColor,
             borderRadius: BorderRadius.circular(22),
@@ -86,7 +86,6 @@ class _AnimalCardState extends State<AnimalCard>
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Слика на животното
               Container(
                 width: 88,
                 height: 88,
@@ -117,7 +116,6 @@ class _AnimalCardState extends State<AnimalCard>
 
               const SizedBox(height: 12),
 
-              // Име
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 4),
                 child: Text(
@@ -135,7 +133,6 @@ class _AnimalCardState extends State<AnimalCard>
 
               const SizedBox(height: 6),
 
-              // Звук
               Text(
                 widget.animal.sound,
                 style: TextStyle(

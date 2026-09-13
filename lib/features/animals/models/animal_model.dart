@@ -4,10 +4,10 @@ class AnimalModel {
   final String emoji;
   final String imagePath;
   final String audioPath;
-  final String sound; // Звукот на животното (мјау, лав, итн)
-  final String habitat; // Живеалиште
-  final String funFact; // Интересен факт
-  final String category; // домашно / дивјо / птица / море
+  final String sound;
+  final String habitat;
+  final String funFact;
+  final String category;
 
   const AnimalModel({
     required this.id,

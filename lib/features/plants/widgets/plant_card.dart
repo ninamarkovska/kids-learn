@@ -37,7 +37,7 @@ class _PlantCardState extends State<PlantCard>
 
     _scale = Tween<double>(
       begin: 1.0,
-      end: 0.98, // многу суптилна анимација
+      end: 0.98,
     ).animate(
       CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut),
     );
