@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/animal_model.dart';
 import '../../../core/accessibility/accessibility_settings.dart';
-import '../../../core/constants/dimensions.dart';
 import '../../../core/services/vibration_service.dart';
 
 class AnimalCard extends StatefulWidget {
@@ -37,7 +36,7 @@ class _AnimalCardState extends State<AnimalCard>
 
     _scaleAnim = Tween<double>(
       begin: 1.0,
-      end: 0.98,
+      end: 0.97,
     ).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
     );
@@ -67,7 +66,7 @@ class _AnimalCardState extends State<AnimalCard>
       child: ScaleTransition(
         scale: _scaleAnim,
         child: Container(
-          padding: const EdgeInsets.all(18),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
           decoration: BoxDecoration(
             color: lightColor,
             borderRadius: BorderRadius.circular(22),
@@ -83,12 +82,12 @@ class _AnimalCardState extends State<AnimalCard>
               ),
             ],
           ),
+
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                width: 88,
-                height: 88,
+                width: 82,
+                height: 82,
                 decoration: BoxDecoration(
                   color: palette.controlBackground,
                   shape: BoxShape.circle,
@@ -103,30 +102,35 @@ class _AnimalCardState extends State<AnimalCard>
                 child: Center(
                   child: Image.asset(
                     widget.animal.imagePath,
-                    width: 58,
-                    height: 58,
+                    width: 54,
+                    height: 54,
                     fit: BoxFit.contain,
                     errorBuilder: (_, __, ___) => Text(
                       widget.animal.emoji,
-                      style: const TextStyle(fontSize: 50),
+                      style: const TextStyle(fontSize: 46),
                     ),
                   ),
                 ),
               ),
 
-              const SizedBox(height: 12),
+              const SizedBox(height: 10),
 
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4),
-                child: Text(
-                  widget.animal.name,
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w800,
-                    color: palette.textPrimary,
+              Expanded(
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 2),
+                    child: Text(
+                      widget.animal.name,
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w800,
+                        height: 1.15,
+                        color: palette.textPrimary,
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -135,9 +139,12 @@ class _AnimalCardState extends State<AnimalCard>
 
               Text(
                 widget.animal.sound,
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  fontSize: 17,
-                  fontWeight: FontWeight.w600,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
                   color: palette.textSecondary,
                 ),
               ),

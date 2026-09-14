@@ -1433,120 +1433,141 @@ class _QuizScreenState extends State<QuizScreen>
   Widget _buildFeedback(QuestionModel question) {
     final correct = _selectedAnswer == question.correctAnswer;
 
-    return AnimatedScale(
-      duration: const Duration(milliseconds: 350),
-      curve: Curves.elasticOut,
-      scale: correct ? _successAnimation.value : 1,
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: correct
-              ? _palette.correctBackground
-              : _palette.incorrectBackground,
-          borderRadius: BorderRadius.circular(28),
-          border: Border.all(
-            color: correct ? _palette.correct : _palette.incorrect,
-            width: 2,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: (correct ? _palette.correct : _palette.incorrect)
-                  .withValues(alpha: .15),
-              blurRadius: 18,
-              offset: const Offset(0, 8),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 62,
-              height: 62,
-              decoration: BoxDecoration(
-                color: (correct ? _palette.correct : _palette.incorrect)
-                    .withValues(alpha: .12),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                correct
-                    ? Icons.check_circle_rounded
-                    : Icons.cancel_rounded,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isSmall = constraints.maxWidth < 360;
+
+        final iconSize = isSmall ? 52.0 : 64.0;
+        final circleSize = isSmall ? 56.0 : 68.0;
+        final titleSize = isSmall ? 22.0 : 26.0;
+        final textSize = isSmall ? 16.0 : 18.0;
+        final answerSize = isSmall ? 20.0 : 24.0;
+
+        return AnimatedScale(
+          duration: const Duration(milliseconds: 350),
+          curve: Curves.elasticOut,
+          scale: correct ? _successAnimation.value : 1,
+          child: Container(
+            width: double.infinity,
+            padding: EdgeInsets.all(isSmall ? 16 : 20),
+            decoration: BoxDecoration(
+              color: correct
+                  ? _palette.correctBackground
+                  : _palette.incorrectBackground,
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(
                 color: correct ? _palette.correct : _palette.incorrect,
-                size: 38,
+                width: _palette.borderWidth + 0.5,
               ),
+              boxShadow: [
+                BoxShadow(
+                  color: (correct ? _palette.correct : _palette.incorrect)
+                      .withValues(alpha: .15),
+                  blurRadius: 16,
+                  offset: const Offset(0, 6),
+                ),
+              ],
             ),
-
-            const SizedBox(width: 16),
-
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    correct ? "Браво! 🌟" : "Неточен одговор",
-                    style: TextStyle(
-                      fontSize: 26,
-                      fontWeight: FontWeight.w900,
-                      color: correct ? _palette.correct : _palette.incorrect,
-                    ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: circleSize,
+                  height: circleSize,
+                  decoration: BoxDecoration(
+                    color: (correct ? _palette.correct : _palette.incorrect)
+                        .withValues(alpha: .12),
+                    shape: BoxShape.circle,
                   ),
-
-                  const SizedBox(height: 8),
-
-                  Text(
+                  child: Icon(
                     correct
-                        ? "Одлично! Точен одговор."
-                        : "Точниот одговор е",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: _palette.textPrimary,
-                      height: 1.35,
-                    ),
+                        ? Icons.check_circle_rounded
+                        : Icons.cancel_rounded,
+                    color: correct ? _palette.correct : _palette.incorrect,
+                    size: iconSize,
                   ),
+                ),
 
-                  if (!correct) ...[
-                    const SizedBox(height: 14),
+                SizedBox(width: isSmall ? 12 : 16),
 
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        correct ? "Браво! 🌟" : "Неточен одговор",
+                        style: TextStyle(
+                          fontSize: titleSize,
+                          fontWeight: FontWeight.w900,
+                          color:
+                          correct ? _palette.correct : _palette.incorrect,
+                        ),
                       ),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(16),
+
+                      SizedBox(height: isSmall ? 6 : 8),
+
+                      Text(
+                        correct
+                            ? "Одлично! Точен одговор."
+                            : "Точниот одговор е:",
+                        style: TextStyle(
+                          fontSize: textSize,
+                          fontWeight: FontWeight.w600,
+                          color: _palette.textPrimary,
+                          height: 1.35,
+                        ),
                       ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(
-                            Icons.check_circle_rounded,
-                            color: Color(0xFF22C55E),
-                            size: 28,
+
+                      if (!correct) ...[
+                        SizedBox(height: isSmall ? 10 : 14),
+
+                        Container(
+                          width: double.infinity,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: isSmall ? 12 : 16,
+                            vertical: isSmall ? 10 : 12,
                           ),
-                          const SizedBox(width: 10),
-                          Flexible(
-                            child: Text(
-                              question.correctAnswer,
-                              style: TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w900,
-                                color: _palette.correct,
-                              ),
+                          decoration: BoxDecoration(
+                            color: _palette.controlBackground,
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: _palette.correct,
+                              width: _palette.borderWidth,
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-            )
-          ],
-        ),
-      ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.check_circle_rounded,
+                                color: _palette.correct,
+                                size: isSmall ? 24 : 28,
+                              ),
+                              const SizedBox(width: 10),
+
+                              Expanded(
+                                child: Text(
+                                  question.correctAnswer,
+                                  softWrap: true,
+                                  overflow: TextOverflow.visible,
+                                  style: TextStyle(
+                                    fontSize: answerSize,
+                                    fontWeight: FontWeight.w900,
+                                    color: _palette.correct,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
